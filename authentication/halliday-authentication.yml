@@ -1,0 +1,13 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/halliday-openapi-original.yml
+summary:
+  types:
+  - http
+schemes:
+- name: ApiKeyAuth
+  type: http
+  scheme: bearer
+  bearerFormat: API_KEY
+  sources:
+  - openapi/halliday-openapi-original.yml
