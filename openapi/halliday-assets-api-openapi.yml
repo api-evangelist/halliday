@@ -1,0 +1,644 @@
+openapi: 3.1.0
+info:
+  title: Halliday API V2 Assets API
+  description: 'API V2 for Halliday''s payment infrastructure, supporting onramps, swaps, and offramps.
+
+
+    This API provides a unified interface for cryptocurrency payments, allowing developers to:
+
+    - Quote payments across multiple providers
+
+    - Execute payments with onramps, swaps, and offramps
+
+    - Track payment status and history
+
+
+    ## Authentication
+
+
+    API key authentication is required for all endpoints.
+
+    '
+  version: 2.0.0
+  contact:
+    name: Contact Halliday
+    url: https://halliday.xyz
+    email: support@halliday.xyz
+servers:
+- url: https://v2.prod.halliday.xyz
+  description: Base domain
+security:
+- ApiKeyAuth: []
+tags:
+- name: Assets
+  description: Asset information, discovery, and supported asset pairs
+paths:
+  /assets:
+    get:
+      summary: Get asset details
+      description: 'Get detailed information about specific assets including metadata, symbols, and chain information.
+
+        '
+      operationId: getAssets
+      tags:
+      - Assets
+      parameters:
+      - name: assets[]
+        in: query
+        required: false
+        description: List of assets to get details for
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+      responses:
+        '200':
+          description: Asset details
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/AssetDetails'
+              example:
+                usd:
+                  issuer: USA
+                  name: United States Dollar
+                  symbol: USD
+                  decimals: 2
+                eur:
+                  issuer: ECB
+                  name: Euro
+                  symbol: EUR
+                  decimals: 2
+                ethereum:0x:
+                  chain: ethereum
+                  address: 0x
+                  name: Ether
+                  symbol: ETH
+                  decimals: 18
+                  image_url: https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: 'Invalid asset format. Expected format: ''chain:address'' for tokens or currency code for fiats'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Missing or invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: API key does not have permission to access asset information
+  /assets/available-inputs:
+    get:
+      summary: Get available input assets for a given output asset
+      description: 'Get a list of assets that can be used as inputs for the given output assets and providers.
+
+        '
+      operationId: getInputAssets
+      tags:
+      - Assets
+      parameters:
+      - name: inputs[]
+        in: query
+        required: false
+        description: Filter by specific input assets
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+      - name: outputs[]
+        in: query
+        required: false
+        description: Output assets to find inputs for
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+      - name: onramps[]
+        in: query
+        required: false
+        description: Filter by specific onramp providers
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: offramps[]
+        in: query
+        required: false
+        description: Filter by specific offramp providers
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Available input assets grouped by output
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    fiats:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Fiat'
+                    tokens:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Token'
+                  required:
+                  - fiats
+                  - tokens
+              example:
+                ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48:
+                  fiats:
+                  - usd
+                  tokens: []
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid provider specified. Provider 'invalid_provider' is not supported
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Authentication required. Please provide a valid API key.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Access denied. Your API key does not have permission to query available assets.
+  /assets/available-outputs:
+    get:
+      summary: Get available output assets for a given input asset
+      description: 'Get a list of assets that can be received as outputs for the given input assets and providers.
+
+        '
+      operationId: getOutputAssets
+      tags:
+      - Assets
+      parameters:
+      - name: inputs[]
+        in: query
+        required: false
+        description: Input assets to find outputs for
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+      - name: outputs[]
+        in: query
+        required: false
+        description: Filter by specific output assets
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+      - name: onramps[]
+        in: query
+        required: false
+        description: Filter by specific onramp providers
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: offramps[]
+        in: query
+        required: false
+        description: Filter by specific offramp providers
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: features[]
+        in: query
+        required: false
+        description: Feature flags to enable additional asset edges
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - BETA_EDGES
+            - ORG_BETA_EDGES
+            - ORG_EDGES
+      responses:
+        '200':
+          description: Available output assets grouped by input
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    fiats:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Fiat'
+                    tokens:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Token'
+                  required:
+                  - fiats
+                  - tokens
+              example:
+                usd:
+                  fiats: []
+                  tokens:
+                  - arbitrum:0x
+                  - ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid input asset format. Asset 'invalid-format' does not match expected pattern.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid or expired API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Your account does not have access to this endpoint
+components:
+  schemas:
+    Token:
+      type: string
+      description: Token identifier in the format "chain:address"
+      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    ProviderIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - provider
+        message:
+          type: string
+    Amount:
+      type: string
+      description: A decimal amount string.
+    Limits:
+      type: object
+      properties:
+        min:
+          type: string
+          description: Minimum amount as a decimal string.
+        max:
+          type: string
+          description: Maximum amount as a decimal string.
+    GeolocationIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - geolocation
+        message:
+          type: string
+    AmountIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    Issue:
+      oneOf:
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
+    Asset:
+      type: string
+      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    FundingIssue:
+      type: object
+      required:
+      - kind
+      - token
+      - balance
+      properties:
+        kind:
+          type: string
+          enum:
+          - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
+          type: string
+          description: Current token balance at the funding address.
+    OwnerIssue:
+      type: object
+      required:
+      - kind
+      - message
+      - mitigation
+      properties:
+        kind:
+          type: string
+          enum:
+          - owner
+        message:
+          type: string
+        mitigation:
+          type: string
+          enum:
+          - change
+          - verify
+    AmountDownstreamIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount-downstream
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    FiatDetails:
+      type: object
+      required:
+      - issuer
+      - name
+      - symbol
+      - decimals
+      properties:
+        issuer:
+          type: string
+          description: Issuer of the fiat
+          example: USA
+        name:
+          type: string
+          description: Full currency name
+          example: US Dollar
+        symbol:
+          type: string
+          description: Currency symbol
+          example: USD
+        decimals:
+          type: number
+          minimum: 0
+          maximum: 18
+          description: Number of decimal places
+          example: 2
+        alias:
+          type: string
+          description: Alternative symbol or alias
+        image_url:
+          type: string
+          format: uri
+          description: Currency icon URL
+    UnknownIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - unknown
+        message:
+          type: string
+    Fiat:
+      type: string
+      description: Fiat currency code
+      example: USD
+    OtherIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - other
+        message:
+          type: string
+    AssetDetails:
+      oneOf:
+      - $ref: '#/components/schemas/FiatDetails'
+      - $ref: '#/components/schemas/TokenDetails'
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
+    PayinMethodIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - payin_method
+        message:
+          type: string
+    TokenDetails:
+      type: object
+      required:
+      - chain
+      - address
+      - name
+      - symbol
+      - decimals
+      properties:
+        chain:
+          type: string
+          description: Blockchain network
+          example: ethereum
+        address:
+          type: string
+          description: Token contract address
+          example: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+        name:
+          type: string
+          description: Token name
+          example: USD Coin
+        symbol:
+          type: string
+          description: Token symbol
+          example: USDC
+        decimals:
+          type: number
+          minimum: 0
+          maximum: 18
+          description: Token decimals
+          example: 6
+        alias:
+          type: string
+          description: Alternative symbol or alias
+        image_url:
+          type: string
+          format: uri
+          description: Token icon URL
+        is_native:
+          type: boolean
+          description: Whether this is the native token
+          example: false
+        wrapper:
+          type: string
+          description: Wrapper token symbol
+        is_oft:
+          type: boolean
+          description: Whether this token is an OFT (Omnichain Fungible Token)
+        coingecko_id:
+          type: string
+          description: CoinGecko identifier for the token
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API_KEY

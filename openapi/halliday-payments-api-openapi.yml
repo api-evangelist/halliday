@@ -1,0 +1,1802 @@
+openapi: 3.1.0
+info:
+  title: Halliday API V2 Assets Payments API
+  description: 'API V2 for Halliday''s payment infrastructure, supporting onramps, swaps, and offramps.
+
+
+    This API provides a unified interface for cryptocurrency payments, allowing developers to:
+
+    - Quote payments across multiple providers
+
+    - Execute payments with onramps, swaps, and offramps
+
+    - Track payment status and history
+
+
+    ## Authentication
+
+
+    API key authentication is required for all endpoints.
+
+    '
+  version: 2.0.0
+  contact:
+    name: Contact Halliday
+    url: https://halliday.xyz
+    email: support@halliday.xyz
+servers:
+- url: https://v2.prod.halliday.xyz
+  description: Base domain
+security:
+- ApiKeyAuth: []
+tags:
+- name: Payments
+  description: Core payment operations including quotes, confirmation, and status tracking
+paths:
+  /payments:
+    get:
+      summary: Get payment status
+      description: 'Get the current status of a payment, including progress through onramp/swap/offramp stages.
+
+        '
+      operationId: getPaymentStatus
+      tags:
+      - Payments
+      parameters:
+      - name: payment_id
+        in: query
+        required: true
+        description: Payment identifier to check
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Payment status retrieved successfully!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: 'Missing required parameter: payment_id'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: You do not have permission to view this payment
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Payment with payment_id 'pay_abc123' not found
+  /payments/history:
+    get:
+      summary: Get payment history
+      description: 'Retrieve a paginated list of payment statuses filtered by owner.
+
+        Returns an array of payment status objects and a pagination key for fetching the next page.
+
+        '
+      operationId: getPaymentHistory
+      tags:
+      - Payments
+      parameters:
+      - name: owner_address
+        in: query
+        required: false
+        description: Owner address to filter payments by
+        schema:
+          type: string
+      - name: pagination_key
+        in: query
+        required: false
+        description: Pagination key from previous response to fetch next page
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: Maximum number of results to return
+        schema:
+          type: number
+      - name: id_query
+        in: query
+        required: false
+        description: Filter payments by ID
+        schema:
+          type: string
+      - name: dest_address
+        in: query
+        required: false
+        description: Filter payments by destination address
+        schema:
+          type: string
+      - name: category
+        in: query
+        required: false
+        description: Filter payments by category
+        schema:
+          type: string
+          enum:
+          - ALL
+          - NEW_OR_FUNDED
+          default: NEW_OR_FUNDED
+      - name: label
+        in: query
+        required: false
+        description: Filter payments by label
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Payment history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - payment_statuses
+                - next_pagination_key
+                properties:
+                  payment_statuses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PaymentStatus'
+                    description: Array of payment status objects
+                  next_pagination_key:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                    description: Pagination key to fetch the next page of results
+                    example: 42ff9b02-037f-4a90-87fb-a4d2ca128565_2025-11-12T22:08:52.517Z
+              example:
+                payment_statuses:
+                - payment_id: <string>
+                  status: COMPLETE
+                  funded: true
+                  created_at: '2025-11-12T20:15:30.000Z'
+                  updated_at: '2025-11-12T20:25:45.000Z'
+                  initiate_fund_by: '2025-11-12T21:15:30.000Z'
+                  completed_at: '2025-11-12T20:25:45.000Z'
+                  quoted:
+                    output_amount:
+                      asset: ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                      amount: '100.00'
+                    fees:
+                      total_fees: '3.50'
+                      conversion_fees: '2.00'
+                      network_fees: '1.00'
+                      business_fees: '0.50'
+                      currency_symbol: USD
+                    onramp: stripe
+                    onramp_method: credit_card
+                    route:
+                    - type: ONRAMP
+                      net_effect:
+                        consume:
+                        - account: USER
+                          resource:
+                            asset: usd
+                            property: BALANCE
+                          amount:
+                            amount: '103.50'
+                        produce:
+                        - account: PROCESSING_ADDRESS
+                          resource:
+                            asset: ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                            property: BALANCE
+                          amount:
+                            amount: '100.00'
+                      pieces_info:
+                      - type: onramp
+                      step_index: 0
+                  fulfilled:
+                    output_amount:
+                      asset: ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                      amount: '100.00'
+                    fees:
+                      total_fees: '3.50'
+                      conversion_fees: '2.00'
+                      network_fees: '1.00'
+                      business_fees: '0.50'
+                      currency_symbol: USD
+                    onramp: stripe
+                    onramp_method: credit_card
+                    route:
+                    - status: COMPLETE
+                      type: ONRAMP
+                      net_effect:
+                        consume:
+                        - account: USER
+                          resource:
+                            asset: usd
+                            property: BALANCE
+                          amount:
+                            amount: '103.50'
+                        produce:
+                        - account: PROCESSING_ADDRESS
+                          resource:
+                            asset: ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                            property: BALANCE
+                          amount:
+                            amount: '100.00'
+                      pieces_info:
+                      - type: onramp
+                      step_index: 0
+                      transaction_hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+                  current_prices:
+                    USD: '1.00'
+                    ethereum:0x: '4200.00'
+                    ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48: '1.00'
+                  price_currency: USD
+                  processing_addresses:
+                  - chain: ethereum
+                    address: 0xaddress...
+                  owner_address: 0xowner...
+                  destination_address: 0xdest...
+                next_pagination_key: 42ff9b02-037f-4a90-87fb-a4d2ca128565_2025-11-12T22:08:52.517Z
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: 'Missing required parameter: owner_address'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: You do not have permission to access payment history for this address
+  /payments/quotes:
+    post:
+      summary: Get payment quotes
+      description: 'Request quotes for payments, supporting both fixed input and fixed output scenarios.
+
+        Returns multiple quote options with pricing, fees, and routing information.
+
+
+        This endpoint can also be used to requote from an existing payment by providing a payment_id.
+
+        When requoting, input amounts are automatically derived from
+
+        the payment''s current state, but you can optionally override the output asset.
+
+        '
+      operationId: getPaymentQuotes
+      tags:
+      - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequest'
+      responses:
+        '200':
+          description: Successful quote response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: amount
+                  given: '5'
+                  limits:
+                    min: '10'
+                    max: '10000'
+                  source: moonpay
+                  message: Amount too low. Minimum amount is $10 USD
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: API key missing or invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Your API key does not have permission to create quotes
+  /payments/confirm:
+    post:
+      summary: Confirm a payment
+      description: 'Confirm a previously quoted payment and receive deposit instructions.
+
+        Returns information on how to fund the payment (widget URL, contract address, etc.).
+
+
+        If a payment output is >= $300 USD, the owner address will need to produce a EVM_OWNER
+
+        signature. The response will include a USER_VERIFY next_instruction instead of funding
+
+        details. In this case, prompt the user to sign the verification payloads via signTypedData,
+
+        then submit a ContinueConfirmPaymentRequest to this same endpoint to complete confirmation.
+
+        Once an owner address has produced an EVM_OWNER signature, subsequent payments with that
+
+        owner address will not require the signature again.
+
+        '
+      operationId: confirmPayment
+      tags:
+      - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - title: ConfirmPaymentRequest
+                description: Initial payment confirmation request.
+                type: object
+                required:
+                - payment_id
+                - state_token
+                - owner_address
+                - destination_address
+                properties:
+                  payment_id:
+                    type: string
+                    description: ID of the payment from the quote to confirm
+                  state_token:
+                    type: string
+                    description: State token from the quote response
+                  owner_address:
+                    type: string
+                    description: Owner address for the payment. This is the address that the payment will be sent from.
+                  destination_address:
+                    type: string
+                    description: Destination address for the payment. This is the address that the payment will be sent to.
+                  client_redirect_url:
+                    type: string
+                    format: uri
+                    description: Optional URL to redirect users to after an onramp flow completes.
+                  owner_chain:
+                    type: string
+                    description: Optional chain for the owner address, needed when the owner operates on a specific chain.
+                  client_redirect_after:
+                    type: string
+                    enum:
+                    - COMPLETED
+                    - FUNDED
+                    default: COMPLETED
+                    description: When to redirect the user to the client_redirect_url. COMPLETED waits for the full payment to finish, FUNDED redirects after funding is confirmed.
+              - title: ContinueConfirmPaymentRequest
+                description: 'Continuation request after a USER_VERIFY instruction. Submit the signed verification
+
+                  payloads to complete the confirmation process.
+
+                  '
+                type: object
+                required:
+                - verification_token
+                - signatures
+                properties:
+                  verification_token:
+                    type: string
+                    description: Opaque HMAC-signed token from the USER_VERIFY instruction. Pass back unmodified.
+                  signatures:
+                    type: array
+                    description: User-signed payloads, one per verification entry from the USER_VERIFY instruction.
+                    items:
+                      type: object
+                      required:
+                      - reason
+                      - signature_type
+                      - signature
+                      properties:
+                        reason:
+                          type: string
+                          enum:
+                          - EVM_OWNER
+                          - EVM_WITHDRAWAL
+                          description: Must match the reason from the corresponding verification entry.
+                        signature_type:
+                          type: string
+                          enum:
+                          - EIP712
+                          description: Must match the signature_type from the corresponding verification entry.
+                        signature:
+                          type: string
+                          description: The user's signature over the verification payload.
+      responses:
+        '200':
+          description: Payment confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid state_token. The quote may have expired.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Authentication failed. Invalid API key.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Access denied. This payment belongs to a different account.
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Payment 'pay_xyz789' not found or has expired
+  /payments/withdraw:
+    post:
+      summary: Return funds to owner or retry payment
+      description: 'Request a withdrawal to return funds back to the owner or to a requoted processing address.
+
+        This endpoint should be used when a payment cannot be completed and funds need to be returned.
+
+        '
+      operationId: withdrawPayment
+      tags:
+      - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawPaymentAuthorizationRequest'
+      responses:
+        '200':
+          description: Withdrawal initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawPaymentAuthorizationResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Missing field 'token_amounts'.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid or missing API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: You are not authorized to withdraw funds from this payment
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Payment 'pay_def456' not found
+  /payments/withdraw/confirm:
+    post:
+      summary: Confirm withdrawal request
+      description: 'Submit and execute the signed withdrawal request to return funds back to the owner or to a requoted processing address.
+
+        '
+      operationId: withdrawPaymentConfirm
+      tags:
+      - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawPaymentRequest'
+      responses:
+        '200':
+          description: Withdrawal executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawPaymentResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid request body
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: You are not authorized to withdraw funds from this payment
+  /payments/balances:
+    post:
+      summary: Get wallet balances
+      description: 'Retrieve balances for the wallets associated with a payment. You can optionally supply additional
+
+        wallet and token pairs to check alongside the payment''s primary wallet.
+
+        '
+      operationId: getPaymentBalances
+      tags:
+      - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestForPaymentBalances'
+            example:
+              payment_id: pay_abc123
+              custom_queries:
+              - address: '0xabc1234567890abcdef1234567890abcdef1234'
+                token: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+              - address: '0xdef1234567890abcdef1234567890abcdef5678'
+                token: arbitrum:0xfffFFFFFfFFfffFFfFffffFffFFfFFfFFfFFf
+      responses:
+        '200':
+          description: Wallet balances retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentBalancesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid wallet address format
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: You do not have permission to query payment balances
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Payment 'pay_abc123' not found
+components:
+  schemas:
+    Token:
+      type: string
+      description: Token identifier in the format "chain:address"
+      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    ProviderIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - provider
+        message:
+          type: string
+    Fees:
+      type: object
+      required:
+      - total_fees
+      - conversion_fees
+      - network_fees
+      - business_fees
+      - currency_symbol
+      properties:
+        total_fees:
+          type: string
+          description: Total fees amount
+        conversion_fees:
+          type: string
+          description: Ramps + bridge + DEX fees
+        network_fees:
+          type: string
+          description: Blockchain gas fees
+        business_fees:
+          type: string
+          description: Developer integration fees
+        currency_symbol:
+          type: string
+          pattern: ^[a-zA-Z]\w{1,7}$
+          description: Fiat currency symbol that the fees are denominated in (e.g., "USD")
+          example: USD
+    Amount:
+      type: string
+      description: A decimal amount string.
+    Limits:
+      type: object
+      properties:
+        min:
+          type: string
+          description: Minimum amount as a decimal string.
+        max:
+          type: string
+          description: Maximum amount as a decimal string.
+    GeolocationIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - geolocation
+        message:
+          type: string
+    AmountIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    QuotedEntry:
+      type: object
+      required:
+      - fees
+      - output_amount
+      - route
+      properties:
+        output_amount:
+          $ref: '#/components/schemas/AssetAmount'
+        fees:
+          $ref: '#/components/schemas/Fees'
+        onramp:
+          type: string
+          description: Onramp provider name
+        onramp_method:
+          type: string
+          enum:
+          - CREDIT_CARD
+          - DEBIT_CARD
+          - ACH
+          - FIAT_BALANCE
+          - TOKEN_BALANCE
+          - APPLE_PAY
+          - PAYPAL
+          - VENMO
+          - REVOLUT
+          - GOOGLE_PAY
+          - SEPA
+          - FASTER_PAYMENTS
+          - PIX
+          - UPI
+          - WIRE
+          description: Payment method
+          example: CREDIT_CARD
+        route:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuotedRouteItem'
+          description: Quoted workflow steps and their effects
+    PaymentStatus:
+      type: object
+      required:
+      - payment_id
+      - org_id
+      - status
+      - funded
+      - created_at
+      - updated_at
+      - initiate_fund_by
+      - quoted
+      - fulfilled
+      - current_prices
+      - price_currency
+      - processing_addresses
+      - owner_chain
+      - owner_address
+      - destination_address
+      - client_redirect_url
+      - declaration
+      properties:
+        payment_id:
+          type: string
+        org_id:
+          type: string
+          description: Organization identifier
+        status:
+          type: string
+          enum:
+          - PENDING
+          - COMPLETE
+          - FAILED
+          - EXPIRED
+          - WITHDRAW_PENDING
+          - WITHDRAWN
+          - TAINTED
+          - UNCONFIRMED
+        funded:
+          type: boolean
+          description: Whether the payment has been funded
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        initiate_fund_by:
+          type: string
+          format: date-time
+          description: Deadline for funding the payment.
+        completed_at:
+          type: string
+          format: date-time
+        quote_request:
+          $ref: '#/components/schemas/QuoteRequest'
+          description: The original quote request.
+        quoted:
+          $ref: '#/components/schemas/QuotedEntry'
+        fulfilled:
+          $ref: '#/components/schemas/FulfilledEntry'
+        current_prices:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping of asset symbols to their unit prices
+          example:
+            USD: '1.00'
+            ethereum:0x: '4200'
+            ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48: '1.00'
+        price_currency:
+          $ref: '#/components/schemas/Asset'
+          description: Fiat asset used for pricing
+        customer_id:
+          type: string
+          description: ID of the customer who created the payment
+        label:
+          type: string
+          description: Optional payment label
+          maxLength: 255
+        processing_addresses:
+          type: array
+          items:
+            type: object
+            required:
+            - chain
+            - address
+            - factory
+            properties:
+              chain:
+                type: string
+                description: Blockchain network
+                example: ethereum
+              address:
+                type: string
+                description: Payment processing contract address
+              factory:
+                type: string
+                description: Factory contract address
+        owner_chain:
+          type: string
+          description: Chain identifier for the owner
+        owner_address:
+          type: string
+          description: Address of the owner of the payment
+        destination_address:
+          type: string
+          description: Address of the destination of the payment
+        next_instruction:
+          $ref: '#/components/schemas/NextInstruction'
+          nullable: true
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+          description: Payment validation issues
+        parent_payment_id:
+          type: string
+          format: uuid
+          description: Parent payment reference
+        client_redirect_url:
+          type: string
+          nullable: true
+          description: Client redirect URL
+        declaration:
+          type: object
+          nullable: true
+          description: Declaration object
+    Issue:
+      oneOf:
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
+    Asset:
+      type: string
+      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    PaymentBalancesResult:
+      type: object
+      required:
+      - address
+      - token
+      - account
+      - value
+      properties:
+        address:
+          type: string
+          description: Wallet address that was queried.
+          example: '0xabc1234567890abcdef1234567890abcdef1234'
+        token:
+          $ref: '#/components/schemas/Token'
+          description: Token identifier that was queried.
+          example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+        account:
+          type: string
+          description: Account type for the balance.
+          enum:
+          - INTENT
+          - SPW
+        value:
+          oneOf:
+          - type: object
+            required:
+            - kind
+            - amount
+            - withdrawal_fee
+            properties:
+              kind:
+                type: string
+                enum:
+                - amount
+              amount:
+                type: string
+                description: Balance amount as a decimal string.
+              withdrawal_fee:
+                type: string
+                nullable: true
+                description: Withdrawal fee amount, or null if not applicable.
+          - type: object
+            required:
+            - kind
+            properties:
+              kind:
+                type: string
+                enum:
+                - error
+          discriminator:
+            propertyName: kind
+    FailureContent:
+      type: object
+      required:
+      - service_ids
+      - latency_seconds
+      properties:
+        service_ids:
+          type: array
+          description: Providers that failed to return quotes.
+          items:
+            type: string
+        latency_seconds:
+          type: number
+          format: float
+          description: Time taken for the failed quote attempt.
+        issues:
+          type: array
+          description: Optional list of structured issues describing the failure.
+          items:
+            $ref: '#/components/schemas/Issue'
+    FulfilledEntry:
+      type: object
+      required:
+      - route
+      properties:
+        output_amount:
+          $ref: '#/components/schemas/AssetAmount'
+        fees:
+          $ref: '#/components/schemas/Fees'
+        onramp:
+          type: string
+          description: Onramp provider name
+        onramp_method:
+          type: string
+          enum:
+          - CREDIT_CARD
+          - DEBIT_CARD
+          - ACH
+          - FIAT_BALANCE
+          - TOKEN_BALANCE
+          - APPLE_PAY
+          - PAYPAL
+          - VENMO
+          - REVOLUT
+          - GOOGLE_PAY
+          - SEPA
+          - FASTER_PAYMENTS
+          - PIX
+          - UPI
+          - WIRE
+          description: Payment method
+          example: CREDIT_CARD
+        route:
+          type: array
+          items:
+            $ref: '#/components/schemas/FulfilledRouteItem'
+          description: In-progress workflow steps, statuses, and their effects
+    WithdrawPaymentRequest:
+      type: object
+      required:
+      - payment_id
+      - token_amounts
+      - recipient_address
+      - owner_signature
+      properties:
+        payment_id:
+          type: string
+          description: ID of the payment to withdraw
+        token_amounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenAmount'
+          description: List of token amounts to withdraw back to the owner or to a requoted processing address
+        recipient_address:
+          type: string
+          description: On-chain address to withdraw the funds to, on the same chain as the assets to withdraw.
+        owner_signature:
+          type: string
+          description: The payment owner's signature on the withdrawal_authorization, authorizing the withdrawal
+        withdraw_account:
+          type: string
+          enum:
+          - INTENT
+          - SPW
+          default: SPW
+          description: Type of account to withdraw from. Use the account value from the balance result.
+        payload:
+          type: string
+          description: The withdraw_authorization string returned from the POST /payments/withdraw response.
+    WithdrawPaymentAuthorizationResponse:
+      type: object
+      required:
+      - type
+      - signature_type
+      - payment_id
+      - withdraw_authorization
+      - state_token
+      properties:
+        signature_type:
+          type: string
+          enum:
+          - EIP712
+          - EIP191
+          description: Signature type required for the withdrawal authorization.
+        payment_id:
+          type: string
+          description: ID of the withdrawal transaction
+        withdraw_authorization:
+          type: string
+          description: 'Authorization data to sign. For EIP712, this is a JSON string to parse and pass to signTypedData. For EIP191, pass this string directly to signMessage.
+
+            '
+        state_token:
+          type: string
+          description: Opaque state token to pass back when confirming the withdrawal.
+    TokenAmount:
+      type: object
+      required:
+      - token
+      - amount
+      properties:
+        token:
+          $ref: '#/components/schemas/Token'
+        amount:
+          type: string
+          description: Amount of the token to withdraw, represented as a string to preserve precision
+    PieceInfo:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - user_fund
+          - onramp
+          - poll
+          - bridge
+          - rev_share
+          - transfer_out
+          - convert
+          - custom_call
+    AssetAmount:
+      type: object
+      required:
+      - asset
+      - amount
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+        amount:
+          type: string
+          description: Amount as a string to preserve precision
+          example: '1'
+    QuotedRouteItem:
+      type: object
+      required:
+      - type
+      - net_effect
+      - pieces_info
+      properties:
+        type:
+          type: string
+          enum:
+          - ONRAMP
+          - ONCHAIN_STEP
+          - USER_FUND
+        net_effect:
+          $ref: '#/components/schemas/EffectAmount'
+        pieces_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/PieceInfo'
+        step_index:
+          type: number
+    FulfilledRouteItem:
+      type: object
+      required:
+      - status
+      - type
+      - net_effect
+      - pieces_info
+      properties:
+        status:
+          type: string
+          enum:
+          - PENDING
+          - COMPLETE
+          - UNREACHABLE
+          - FAILED
+        type:
+          type: string
+          enum:
+          - ONRAMP
+          - ONCHAIN_STEP
+          - USER_FUND
+        net_effect:
+          $ref: '#/components/schemas/EffectAmount'
+        pieces_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/PieceInfo'
+        step_index:
+          type: number
+        transaction_hash:
+          type: string
+          description: Blockchain transaction hash for the step
+    FundingIssue:
+      type: object
+      required:
+      - kind
+      - token
+      - balance
+      properties:
+        kind:
+          type: string
+          enum:
+          - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
+          type: string
+          description: Current token balance at the funding address.
+    OwnerIssue:
+      type: object
+      required:
+      - kind
+      - message
+      - mitigation
+      properties:
+        kind:
+          type: string
+          enum:
+          - owner
+        message:
+          type: string
+        mitigation:
+          type: string
+          enum:
+          - change
+          - verify
+    AmountDownstreamIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount-downstream
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    DepositInfo:
+      type: object
+      required:
+      - deposit_token
+      - deposit_amount
+      - deposit_address
+      - deposit_chain
+      properties:
+        deposit_token:
+          $ref: '#/components/schemas/Asset'
+        deposit_amount:
+          type: string
+          description: Amount to deposit, as a decimal string.
+          example: '4.8'
+        deposit_address:
+          type: string
+          description: Address to which funds will be deposited.
+        deposit_chain:
+          type: string
+          description: Network on which the deposit will be made (e.g., base, ethereum).
+          example: base
+    Quote:
+      allOf:
+      - $ref: '#/components/schemas/QuotedEntry'
+      - type: object
+        properties:
+          payment_id:
+            type: string
+            description: Unique payment identifier
+      required:
+      - payment_id
+    UserVerifyInstruction:
+      type: object
+      required:
+      - type
+      - verification_token
+      - verifications
+      properties:
+        type:
+          type: string
+          enum:
+          - USER_VERIFY
+          description: Discriminator for this instruction type.
+        verification_token:
+          type: string
+          description: Token to submit with verification signatures.
+        verifications:
+          type: array
+          description: List of verifications the user must complete.
+          items:
+            type: object
+            required:
+            - reason
+            - signature_type
+            - payload
+            properties:
+              reason:
+                type: string
+                enum:
+                - EVM_OWNER
+                - EVM_WITHDRAWAL
+                description: Reason for the verification.
+              signature_type:
+                type: string
+                enum:
+                - EIP712
+                - EIP191
+                description: Signature type required.
+              payload:
+                type: string
+                description: Payload to sign.
+    EffectAmount:
+      type: object
+      required:
+      - consume
+      - produce
+      properties:
+        consume:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeAmount'
+        produce:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeAmount'
+    PaymentBalancesResponse:
+      type: object
+      required:
+      - balance_results
+      properties:
+        balance_results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentBalancesResult'
+    UnknownIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - unknown
+        message:
+          type: string
+    Resource:
+      type: object
+      required:
+      - asset
+      - property
+      properties:
+        asset:
+          type: string
+        property:
+          type: string
+          enum:
+          - APPROVAL
+          - BALANCE
+          - SIDE_EFFECT
+    NextInstruction:
+      description: Instruction payload that returns the funding pages if the payment requires funding.
+      oneOf:
+      - $ref: '#/components/schemas/OnrampOrTransferInInstruction'
+      - $ref: '#/components/schemas/UserVerifyInstruction'
+      discriminator:
+        propertyName: type
+        mapping:
+          ONRAMP: '#/components/schemas/OnrampOrTransferInInstruction'
+          TRANSFER_IN: '#/components/schemas/OnrampOrTransferInInstruction'
+          USER_VERIFY: '#/components/schemas/UserVerifyInstruction'
+      example:
+        type: ONRAMP
+        payment_id: <string>
+        funding_page_url: https://app.halliday.xyz/funding/${payment_id}
+        deposit_info:
+        - deposit_token: base:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          deposit_amount: '4.8'
+          deposit_address: 0xaddress
+          deposit_chain: base
+    OtherIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - other
+        message:
+          type: string
+    OnrampOrTransferInInstruction:
+      type: object
+      required:
+      - type
+      - payment_id
+      - funding_page_url
+      - deposit_info
+      properties:
+        type:
+          type: string
+          enum:
+          - ONRAMP
+          - TRANSFER_IN
+          description: Discriminator for this instruction type.
+        payment_id:
+          type: string
+          description: The payment this instruction is associated with.
+        funding_page_url:
+          type: string
+          format: uri
+          description: URL where the user can complete funding for this payment.
+        deposit_info:
+          type: array
+          description: One or more deposit routes to fund the payment.
+          items:
+            $ref: '#/components/schemas/DepositInfo'
+    WithdrawPaymentResponse:
+      type: object
+      required:
+      - payment_id
+      - transaction_hash
+      properties:
+        payment_id:
+          type: string
+          description: ID of the payment to withdraw
+        transaction_hash:
+          type: string
+          description: Blockchain transaction hash for the withdrawal
+    ChangeAmount:
+      type: object
+      required:
+      - account
+      - resource
+      - amount
+      properties:
+        account:
+          type: string
+          enum:
+          - USER
+          - DEST
+          - HALLIDAY
+          - SPW
+          - REV_SHARE
+          - BRIDGE
+        resource:
+          $ref: '#/components/schemas/Resource'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        tx_id:
+          type: string
+          description: Blockchain transaction hash associated with this change.
+    WithdrawPaymentAuthorizationRequest:
+      type: object
+      required:
+      - payment_id
+      - token_amounts
+      - recipient_address
+      properties:
+        payment_id:
+          type: string
+          description: ID of the payment to withdraw
+        token_amounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenAmount'
+          description: List of token amounts to withdraw back to the owner or to a requoted processing address
+        recipient_address:
+          type: string
+          description: On-chain address to withdraw the funds to. The assets will go to the address on the same chain the assets are on.
+        withdraw_account:
+          type: string
+          enum:
+          - INTENT
+          - SPW
+          default: SPW
+          description: Type of account to withdraw from.
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
+    QuoteRequest:
+      type: object
+      required:
+      - request
+      - price_currency
+      properties:
+        request:
+          $ref: '#/components/schemas/FixedInputQuoteRequest'
+        price_currency:
+          type: string
+          description: Currency that all prices are denominated in
+          example: USD
+        onramps:
+          type: array
+          items:
+            type: string
+          description: Filter by specific onramp providers
+          example:
+          - moonpay
+          - coinbase
+        onramp_methods:
+          type: array
+          items:
+            type: string
+            enum:
+            - CREDIT_CARD
+            - DEBIT_CARD
+            - ACH
+            - FIAT_BALANCE
+            - TOKEN_BALANCE
+            - APPLE_PAY
+            - PAYPAL
+            - VENMO
+            - REVOLUT
+            - GOOGLE_PAY
+            - SEPA
+            - FASTER_PAYMENTS
+            - PIX
+            - UPI
+            - WIRE
+          description: Filter by onramp payment methods
+          example:
+          - CREDIT_CARD
+          - ACH
+          - APPLE_PAY
+        customer_ip_address:
+          type: string
+          description: IP address of the customer
+        customer_id:
+          type: string
+          description: Customer ID for tracking
+        parent_payment_id:
+          type: string
+          description: Optional parent payment identifier used when creating a quote from an existing payment.
+        label:
+          type: string
+          maxLength: 255
+          description: Optional label for the payment.
+        features:
+          type: array
+          items:
+            type: string
+            enum:
+            - BETA_EDGES
+            - ORG_BETA_EDGES
+            - ORG_EDGES
+          description: Feature flags to enable for this quote.
+        rev_share_name:
+          type: string
+          description: Revenue share configuration name.
+        allow_unsafe_transfer_out:
+          type: boolean
+          description: Allow unsafe transfer out operations.
+        show_all_issues:
+          type: boolean
+          description: Return all validation issues instead of failing on the first.
+        allow_unsafe_slippage:
+          type: boolean
+          description: Allow quotes with higher than normal slippage.
+        allow_exceed_max_input_limit:
+          type: boolean
+          description: Allow quotes that exceed the maximum input limit.
+        use_intent_refund:
+          type: boolean
+          description: Use intent-based refund flow.
+        hops:
+          type: array
+          items:
+            type: string
+          description: Intermediate chain hops for routing.
+    RequestForPaymentBalances:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+          description: Payment identifier whose associated wallets should be queried.
+          example: 41b16a6f-704e-44ba-9964-2b66df8a73e8
+        custom_queries:
+          type: array
+          description: Additional wallet and token combinations to query.
+          items:
+            type: object
+            required:
+            - address
+            - token
+            properties:
+              address:
+                type: string
+                description: Wallet address to query.
+                example: '0xabc1234567890abcdef1234567890abcdef1234'
+              token:
+                $ref: '#/components/schemas/Token'
+                description: Token identifier to query at the wallet address.
+                example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    PayinMethodIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - payin_method
+        message:
+          type: string
+    QuoteResponse:
+      type: object
+      required:
+      - quote_request
+      - quotes
+      - current_prices
+      - price_currency
+      - state_token
+      - quoted_at
+      - accept_by
+      - failures
+      - limits
+      properties:
+        quote_request:
+          $ref: '#/components/schemas/QuoteRequest'
+        quotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quote'
+        current_prices:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping of asset symbols to their unit prices
+          example:
+            USD: '1.00'
+            ethereum:0x: '4200'
+            ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48: '1.00'
+        price_currency:
+          type: string
+          description: Currency that all prices are denominated in
+          example: USD
+        state_token:
+          type: string
+          description: 'Signed state token containing routing and payment flow information.
+
+            This value must be passed unmodified in subsequent API calls.
+
+            Do not attempt to parse or modify this data as it is cryptographically signed.
+
+            '
+        quoted_at:
+          type: string
+          format: date-time
+          description: 'Timestamp of when the quote was created, in UTC ISO 8601 format
+
+            '
+        accept_by:
+          type: string
+          format: date-time
+          description: 'Timestamp of when the quote will expire, in UTC ISO 8601 format
+
+            '
+        failures:
+          type: array
+          description: Providers that failed to return a quote.
+          items:
+            $ref: '#/components/schemas/FailureContent'
+        limits:
+          type: array
+          description: Input amount limits for the quote.
+          items:
+            type: object
+            properties:
+              min:
+                type: string
+                description: Minimum input amount.
+              max:
+                type: string
+                description: Maximum input amount.
+    FixedInputQuoteRequest:
+      type: object
+      required:
+      - kind
+      - fixed_input_amount
+      - output_asset
+      properties:
+        kind:
+          type: string
+          enum:
+          - FIXED_INPUT
+        fixed_input_amount:
+          $ref: '#/components/schemas/AssetAmount'
+        output_asset:
+          $ref: '#/components/schemas/Asset'
+        dest_address:
+          type: string
+          description: Optional destination address for the output tokens.
+        custom_actions:
+          type: object
+          description: Optional custom onchain actions to execute as part of the payment.
+          properties:
+            actions:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - CallImmediateAction
+                  target:
+                    type: string
+                    description: Target contract address.
+                  value:
+                    type: string
+                    description: Native token value to send.
+                  calldata:
+                    type: string
+                    description: Encoded calldata for the contract call.
+            user_estimated_gas:
+              type: string
+              description: Estimated gas for the custom actions.
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API_KEY

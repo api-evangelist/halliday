@@ -1,0 +1,375 @@
+openapi: 3.1.0
+info:
+  title: Halliday API V2 Assets Chains API
+  description: 'API V2 for Halliday''s payment infrastructure, supporting onramps, swaps, and offramps.
+
+
+    This API provides a unified interface for cryptocurrency payments, allowing developers to:
+
+    - Quote payments across multiple providers
+
+    - Execute payments with onramps, swaps, and offramps
+
+    - Track payment status and history
+
+
+    ## Authentication
+
+
+    API key authentication is required for all endpoints.
+
+    '
+  version: 2.0.0
+  contact:
+    name: Contact Halliday
+    url: https://halliday.xyz
+    email: support@halliday.xyz
+servers:
+- url: https://v2.prod.halliday.xyz
+  description: Base domain
+security:
+- ApiKeyAuth: []
+tags:
+- name: Chains
+  description: Blockchain network information and configuration
+paths:
+  /chains:
+    get:
+      summary: Get supported chains
+      description: 'Get a list of all supported blockchain networks with their configuration details.
+
+        '
+      operationId: getChains
+      tags:
+      - Chains
+      responses:
+        '200':
+          description: List of supported chains
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/ChainInfo'
+              example:
+                ethereum:
+                  chain_id:
+                    \#: 1
+                  network: ethereum
+                  native_currency:
+                    name: Ether
+                    symbol: ETH
+                    decimals: 18
+                  is_testnet: false
+                  explorer: https://etherscan.io/
+                  image: <IMAGE_URL>...
+                  rpc: <RPC_URL>...
+                arbitrum:
+                  chain_id:
+                    \#: 42161
+                  network: arbitrum
+                  native_currency:
+                    name: Ether
+                    symbol: ETH
+                    decimals: 18
+                  is_testnet: false
+                  explorer: https://arbiscan.io/
+                  image: <IMAGE_URL>...
+                  rpc: <RPC_URL>...
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                - kind: other
+                  message: Insufficient permissions to access this resource
+components:
+  schemas:
+    Token:
+      type: string
+      description: Token identifier in the format "chain:address"
+      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    ProviderIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - provider
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
+    Amount:
+      type: string
+      description: A decimal amount string.
+    OwnerIssue:
+      type: object
+      required:
+      - kind
+      - message
+      - mitigation
+      properties:
+        kind:
+          type: string
+          enum:
+          - owner
+        message:
+          type: string
+        mitigation:
+          type: string
+          enum:
+          - change
+          - verify
+    Limits:
+      type: object
+      properties:
+        min:
+          type: string
+          description: Minimum amount as a decimal string.
+        max:
+          type: string
+          description: Maximum amount as a decimal string.
+    UnknownIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - unknown
+        message:
+          type: string
+    AmountIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    PayinMethodIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - payin_method
+        message:
+          type: string
+    GeolocationIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - geolocation
+        message:
+          type: string
+    Issue:
+      oneOf:
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
+    Asset:
+      type: string
+      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    FundingIssue:
+      type: object
+      required:
+      - kind
+      - token
+      - balance
+      properties:
+        kind:
+          type: string
+          enum:
+          - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
+          type: string
+          description: Current token balance at the funding address.
+    OtherIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - other
+        message:
+          type: string
+    AmountDownstreamIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount-downstream
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    ChainInfo:
+      type: object
+      required:
+      - chain_id
+      - network
+      - address_family
+      - is_testnet
+      properties:
+        chain_id:
+          type: object
+          description: Chain ID for the network
+          example:
+            \#: 1
+        network:
+          type: string
+          description: Network name
+          example: ethereum
+        address_family:
+          type: string
+          description: Address family for the chain
+          enum:
+          - EVM
+          - SOL
+          - BTC
+          - TON
+          - TRON
+          - ALEO
+          - DOGE
+          - LTC
+          - XRPL
+          example: EVM
+        native_currency:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Ether
+            symbol:
+              type: string
+              example: ETH
+            decimals:
+              type: number
+              example: 18
+          required:
+          - name
+          - symbol
+          - decimals
+        is_testnet:
+          type: boolean
+          description: Whether this is a testnet
+          example: false
+        explorer:
+          type: string
+          format: uri
+          description: Block explorer URL
+          example: https://etherscan.io
+        image:
+          type: string
+          format: uri
+          description: Chain logo URL
+        rpc:
+          type: string
+          format: uri
+          description: RPC endpoint URL
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API_KEY
