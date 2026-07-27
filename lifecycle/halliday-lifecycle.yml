@@ -1,0 +1,19 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.halliday.xyz/pages/api-quickstart.md
+versioning:
+  scheme: uri-host
+  current: v2
+  version: 2.0.0
+  base_url: https://v2.prod.halliday.xyz
+  note: Version carried in the API host (v2.prod.halliday.xyz). No dated version header documented.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: No published deprecation/Sunset policy found.
+sla:
+  url: null
+status_page:
+  url: null
+  note: No dedicated Halliday status page found (halliday.statuspage.io is not provisioned; it redirects to the vendor site).
+deprecated_operations: []

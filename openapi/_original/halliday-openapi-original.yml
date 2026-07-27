@@ -1,0 +1,3408 @@
+openapi: 3.1.0
+info:
+  title: Halliday API V2
+  description: >
+    API V2 for Halliday's payment infrastructure, supporting onramps, swaps, and
+    offramps.
+
+
+    This API provides a unified interface for cryptocurrency payments, allowing
+    developers to:
+
+    - Quote payments across multiple providers
+
+    - Execute payments with onramps, swaps, and offramps
+
+    - Track payment status and history
+
+
+    ## Authentication
+
+
+    API key authentication is required for all endpoints.
+  version: 2.0.0
+  contact:
+    name: Contact Halliday
+    url: https://halliday.xyz
+    email: support@halliday.xyz
+security:
+  - ApiKeyAuth: []
+servers:
+  - url: https://v2.prod.halliday.xyz
+    description: Base domain
+paths:
+  /chains:
+    get:
+      summary: Get supported chains
+      description: >
+        Get a list of all supported blockchain networks with their configuration
+        details.
+      operationId: getChains
+      tags:
+        - Chains
+      responses:
+        '200':
+          description: List of supported chains
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/ChainInfo'
+              example:
+                ethereum:
+                  chain_id:
+                    \#: 1
+                  network: ethereum
+                  native_currency:
+                    name: Ether
+                    symbol: ETH
+                    decimals: 18
+                  is_testnet: false
+                  explorer: https://etherscan.io/
+                  image: <IMAGE_URL>...
+                  rpc: <RPC_URL>...
+                arbitrum:
+                  chain_id:
+                    \#: 42161
+                  network: arbitrum
+                  native_currency:
+                    name: Ether
+                    symbol: ETH
+                    decimals: 18
+                  is_testnet: false
+                  explorer: https://arbiscan.io/
+                  image: <IMAGE_URL>...
+                  rpc: <RPC_URL>...
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Insufficient permissions to access this resource
+  /assets:
+    get:
+      summary: Get asset details
+      description: >
+        Get detailed information about specific assets including metadata,
+        symbols, and chain information.
+      operationId: getAssets
+      tags:
+        - Assets
+      parameters:
+        - name: assets[]
+          in: query
+          required: false
+          description: List of assets to get details for
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Asset'
+      responses:
+        '200':
+          description: Asset details
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/AssetDetails'
+              example:
+                usd:
+                  issuer: USA
+                  name: United States Dollar
+                  symbol: USD
+                  decimals: 2
+                eur:
+                  issuer: ECB
+                  name: Euro
+                  symbol: EUR
+                  decimals: 2
+                ethereum:0x:
+                  chain: ethereum
+                  address: 0x
+                  name: Ether
+                  symbol: ETH
+                  decimals: 18
+                  image_url: >-
+                    https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: >-
+                      Invalid asset format. Expected format: 'chain:address' for
+                      tokens or currency code for fiats
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Missing or invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: >-
+                      API key does not have permission to access asset
+                      information
+  /assets/available-inputs:
+    get:
+      summary: Get available input assets for a given output asset
+      description: >
+        Get a list of assets that can be used as inputs for the given output
+        assets and providers.
+      operationId: getInputAssets
+      tags:
+        - Assets
+      parameters:
+        - name: inputs[]
+          in: query
+          required: false
+          description: Filter by specific input assets
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Asset'
+        - name: outputs[]
+          in: query
+          required: false
+          description: Output assets to find inputs for
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Asset'
+        - name: onramps[]
+          in: query
+          required: false
+          description: Filter by specific onramp providers
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: offramps[]
+          in: query
+          required: false
+          description: Filter by specific offramp providers
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Available input assets grouped by output
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    fiats:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Fiat'
+                    tokens:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Token'
+                  required:
+                    - fiats
+                    - tokens
+              example:
+                ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48:
+                  fiats:
+                    - usd
+                  tokens: []
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: >-
+                      Invalid provider specified. Provider 'invalid_provider' is
+                      not supported
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Authentication required. Please provide a valid API key.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: >-
+                      Access denied. Your API key does not have permission to
+                      query available assets.
+  /assets/available-outputs:
+    get:
+      summary: Get available output assets for a given input asset
+      description: >
+        Get a list of assets that can be received as outputs for the given input
+        assets and providers.
+      operationId: getOutputAssets
+      tags:
+        - Assets
+      parameters:
+        - name: inputs[]
+          in: query
+          required: false
+          description: Input assets to find outputs for
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Asset'
+        - name: outputs[]
+          in: query
+          required: false
+          description: Filter by specific output assets
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Asset'
+        - name: onramps[]
+          in: query
+          required: false
+          description: Filter by specific onramp providers
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: offramps[]
+          in: query
+          required: false
+          description: Filter by specific offramp providers
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: features[]
+          in: query
+          required: false
+          description: Feature flags to enable additional asset edges
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - BETA_EDGES
+                - ORG_BETA_EDGES
+                - ORG_EDGES
+      responses:
+        '200':
+          description: Available output assets grouped by input
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    fiats:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Fiat'
+                    tokens:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Token'
+                  required:
+                    - fiats
+                    - tokens
+              example:
+                usd:
+                  fiats: []
+                  tokens:
+                    - arbitrum:0x
+                    - ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: >-
+                      Invalid input asset format. Asset 'invalid-format' does
+                      not match expected pattern.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid or expired API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Your account does not have access to this endpoint
+  /payments:
+    get:
+      summary: Get payment status
+      description: >
+        Get the current status of a payment, including progress through
+        onramp/swap/offramp stages.
+      operationId: getPaymentStatus
+      tags:
+        - Payments
+      parameters:
+        - name: payment_id
+          in: query
+          required: true
+          description: Payment identifier to check
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payment status retrieved successfully!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: 'Missing required parameter: payment_id'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: You do not have permission to view this payment
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Payment with payment_id 'pay_abc123' not found
+  /payments/history:
+    get:
+      summary: Get payment history
+      description: >
+        Retrieve a paginated list of payment statuses filtered by owner.
+
+        Returns an array of payment status objects and a pagination key for
+        fetching the next page.
+      operationId: getPaymentHistory
+      tags:
+        - Payments
+      parameters:
+        - name: owner_address
+          in: query
+          required: false
+          description: Owner address to filter payments by
+          schema:
+            type: string
+        - name: pagination_key
+          in: query
+          required: false
+          description: Pagination key from previous response to fetch next page
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of results to return
+          schema:
+            type: number
+        - name: id_query
+          in: query
+          required: false
+          description: Filter payments by ID
+          schema:
+            type: string
+        - name: dest_address
+          in: query
+          required: false
+          description: Filter payments by destination address
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: false
+          description: Filter payments by category
+          schema:
+            type: string
+            enum:
+              - ALL
+              - NEW_OR_FUNDED
+            default: NEW_OR_FUNDED
+        - name: label
+          in: query
+          required: false
+          description: Filter payments by label
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payment history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - payment_statuses
+                  - next_pagination_key
+                properties:
+                  payment_statuses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PaymentStatus'
+                    description: Array of payment status objects
+                  next_pagination_key:
+                    anyOf:
+                      - type: string
+                      - type: 'null'
+                    description: Pagination key to fetch the next page of results
+                    example: >-
+                      42ff9b02-037f-4a90-87fb-a4d2ca128565_2025-11-12T22:08:52.517Z
+              example:
+                payment_statuses:
+                  - payment_id: <string>
+                    status: COMPLETE
+                    funded: true
+                    created_at: '2025-11-12T20:15:30.000Z'
+                    updated_at: '2025-11-12T20:25:45.000Z'
+                    initiate_fund_by: '2025-11-12T21:15:30.000Z'
+                    completed_at: '2025-11-12T20:25:45.000Z'
+                    quoted:
+                      output_amount:
+                        asset: ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                        amount: '100.00'
+                      fees:
+                        total_fees: '3.50'
+                        conversion_fees: '2.00'
+                        network_fees: '1.00'
+                        business_fees: '0.50'
+                        currency_symbol: USD
+                      onramp: stripe
+                      onramp_method: credit_card
+                      route:
+                        - type: ONRAMP
+                          net_effect:
+                            consume:
+                              - account: USER
+                                resource:
+                                  asset: usd
+                                  property: BALANCE
+                                amount:
+                                  amount: '103.50'
+                            produce:
+                              - account: PROCESSING_ADDRESS
+                                resource:
+                                  asset: >-
+                                    ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                                  property: BALANCE
+                                amount:
+                                  amount: '100.00'
+                          pieces_info:
+                            - type: onramp
+                          step_index: 0
+                    fulfilled:
+                      output_amount:
+                        asset: ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                        amount: '100.00'
+                      fees:
+                        total_fees: '3.50'
+                        conversion_fees: '2.00'
+                        network_fees: '1.00'
+                        business_fees: '0.50'
+                        currency_symbol: USD
+                      onramp: stripe
+                      onramp_method: credit_card
+                      route:
+                        - status: COMPLETE
+                          type: ONRAMP
+                          net_effect:
+                            consume:
+                              - account: USER
+                                resource:
+                                  asset: usd
+                                  property: BALANCE
+                                amount:
+                                  amount: '103.50'
+                            produce:
+                              - account: PROCESSING_ADDRESS
+                                resource:
+                                  asset: >-
+                                    ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+                                  property: BALANCE
+                                amount:
+                                  amount: '100.00'
+                          pieces_info:
+                            - type: onramp
+                          step_index: 0
+                          transaction_hash: >-
+                            0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+                    current_prices:
+                      USD: '1.00'
+                      ethereum:0x: '4200.00'
+                      ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48: '1.00'
+                    price_currency: USD
+                    processing_addresses:
+                      - chain: ethereum
+                        address: 0xaddress...
+                    owner_address: 0xowner...
+                    destination_address: 0xdest...
+                next_pagination_key: 42ff9b02-037f-4a90-87fb-a4d2ca128565_2025-11-12T22:08:52.517Z
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: 'Missing required parameter: owner_address'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: >-
+                      You do not have permission to access payment history for
+                      this address
+  /payments/quotes:
+    post:
+      summary: Get payment quotes
+      description: >
+        Request quotes for payments, supporting both fixed input and fixed
+        output scenarios.
+
+        Returns multiple quote options with pricing, fees, and routing
+        information.
+
+
+        This endpoint can also be used to requote from an existing payment by
+        providing a payment_id.
+
+        When requoting, input amounts are automatically derived from
+
+        the payment's current state, but you can optionally override the output
+        asset.
+      operationId: getPaymentQuotes
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequest'
+      responses:
+        '200':
+          description: Successful quote response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: amount
+                    given: '5'
+                    limits:
+                      min: '10'
+                      max: '10000'
+                    source: moonpay
+                    message: Amount too low. Minimum amount is $10 USD
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: API key missing or invalid
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Your API key does not have permission to create quotes
+  /payments/confirm:
+    post:
+      summary: Confirm a payment
+      description: >
+        Confirm a previously quoted payment and receive deposit instructions.
+
+        Returns information on how to fund the payment (widget URL, contract
+        address, etc.).
+
+
+        If a payment output is >= $300 USD, the owner address will need to
+        produce a EVM_OWNER
+
+        signature. The response will include a USER_VERIFY next_instruction
+        instead of funding
+
+        details. In this case, prompt the user to sign the verification payloads
+        via signTypedData,
+
+        then submit a ContinueConfirmPaymentRequest to this same endpoint to
+        complete confirmation.
+
+        Once an owner address has produced an EVM_OWNER signature, subsequent
+        payments with that
+
+        owner address will not require the signature again.
+      operationId: confirmPayment
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - title: ConfirmPaymentRequest
+                  description: Initial payment confirmation request.
+                  type: object
+                  required:
+                    - payment_id
+                    - state_token
+                    - owner_address
+                    - destination_address
+                  properties:
+                    payment_id:
+                      type: string
+                      description: ID of the payment from the quote to confirm
+                    state_token:
+                      type: string
+                      description: State token from the quote response
+                    owner_address:
+                      type: string
+                      description: >-
+                        Owner address for the payment. This is the address that
+                        the payment will be sent from.
+                    destination_address:
+                      type: string
+                      description: >-
+                        Destination address for the payment. This is the address
+                        that the payment will be sent to.
+                    client_redirect_url:
+                      type: string
+                      format: uri
+                      description: >-
+                        Optional URL to redirect users to after an onramp flow
+                        completes.
+                    owner_chain:
+                      type: string
+                      description: >-
+                        Optional chain for the owner address, needed when the
+                        owner operates on a specific chain.
+                    client_redirect_after:
+                      type: string
+                      enum:
+                        - COMPLETED
+                        - FUNDED
+                      default: COMPLETED
+                      description: >-
+                        When to redirect the user to the client_redirect_url.
+                        COMPLETED waits for the full payment to finish, FUNDED
+                        redirects after funding is confirmed.
+                - title: ContinueConfirmPaymentRequest
+                  description: >
+                    Continuation request after a USER_VERIFY instruction. Submit
+                    the signed verification
+
+                    payloads to complete the confirmation process.
+                  type: object
+                  required:
+                    - verification_token
+                    - signatures
+                  properties:
+                    verification_token:
+                      type: string
+                      description: >-
+                        Opaque HMAC-signed token from the USER_VERIFY
+                        instruction. Pass back unmodified.
+                    signatures:
+                      type: array
+                      description: >-
+                        User-signed payloads, one per verification entry from
+                        the USER_VERIFY instruction.
+                      items:
+                        type: object
+                        required:
+                          - reason
+                          - signature_type
+                          - signature
+                        properties:
+                          reason:
+                            type: string
+                            enum:
+                              - EVM_OWNER
+                              - EVM_WITHDRAWAL
+                            description: >-
+                              Must match the reason from the corresponding
+                              verification entry.
+                          signature_type:
+                            type: string
+                            enum:
+                              - EIP712
+                            description: >-
+                              Must match the signature_type from the
+                              corresponding verification entry.
+                          signature:
+                            type: string
+                            description: >-
+                              The user's signature over the verification
+                              payload.
+      responses:
+        '200':
+          description: Payment confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid state_token. The quote may have expired.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Authentication failed. Invalid API key.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: >-
+                      Access denied. This payment belongs to a different
+                      account.
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Payment 'pay_xyz789' not found or has expired
+  /payments/withdraw:
+    post:
+      summary: Return funds to owner or retry payment
+      description: >
+        Request a withdrawal to return funds back to the owner or to a requoted
+        processing address.
+
+        This endpoint should be used when a payment cannot be completed and
+        funds need to be returned.
+      operationId: withdrawPayment
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawPaymentAuthorizationRequest'
+      responses:
+        '200':
+          description: Withdrawal initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawPaymentAuthorizationResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Missing field 'token_amounts'.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid or missing API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: You are not authorized to withdraw funds from this payment
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Payment 'pay_def456' not found
+  /payments/withdraw/confirm:
+    post:
+      summary: Confirm withdrawal request
+      description: >
+        Submit and execute the signed withdrawal request to return funds back to
+        the owner or to a requoted processing address.
+      operationId: withdrawPaymentConfirm
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawPaymentRequest'
+      responses:
+        '200':
+          description: Withdrawal executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawPaymentResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid request body
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: You are not authorized to withdraw funds from this payment
+  /payments/balances:
+    post:
+      summary: Get wallet balances
+      description: >
+        Retrieve balances for the wallets associated with a payment. You can
+        optionally supply additional
+
+        wallet and token pairs to check alongside the payment's primary wallet.
+      operationId: getPaymentBalances
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestForPaymentBalances'
+            example:
+              payment_id: pay_abc123
+              custom_queries:
+                - address: '0xabc1234567890abcdef1234567890abcdef1234'
+                  token: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+                - address: '0xdef1234567890abcdef1234567890abcdef5678'
+                  token: arbitrum:0xfffFFFFFfFFfffFFfFffffFffFFfFFfFFfFFf
+      responses:
+        '200':
+          description: Wallet balances retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentBalancesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid wallet address format
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: You do not have permission to query payment balances
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Payment 'pay_abc123' not found
+  /orgs/webhooks:
+    post:
+      summary: Register a webhook
+      description: >
+        Register an HTTPS endpoint to receive signed event notifications when a
+        workflow reaches a
+
+        terminal state. Halliday delivers each event as an HTTP `POST` to your
+        registered `url`, so the
+
+        endpoint must accept `POST` requests. On success the response includes a
+        `signing_secret` that
+
+        is **only ever returned on creation and rotation** — store it
+        immediately, because it cannot be
+
+        retrieved again from the list endpoint.
+
+
+        Authenticate with a secret API key that has webhook access. Publishable
+        keys cannot manage webhooks.
+      operationId: registerWebhook
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterWebhookRequest'
+            example:
+              url: https://api.yourapp.com/halliday/webhooks
+              label: prod-workflows
+              event_types:
+                - WORKFLOW_COMPLETED
+                - WORKFLOW_FAILED
+              auth_header:
+                name: X-Webhook-Token
+                value: a-shared-secret-token
+      responses:
+        '200':
+          description: Webhook registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+              example:
+                id: 4f2c…
+                label: prod-workflows
+                url: https://api.yourapp.com/halliday/webhooks
+                signing_secret: a1b2c3…
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                errors:
+                  - code: invalid_type
+                    expected: string
+                    path:
+                      - label
+                    message: 'Invalid input: expected string, received undefined'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Publishable keys cannot manage webhooks
+    get:
+      summary: List webhooks
+      description: >
+        List the webhooks registered for your org. The signing secret is never
+        included in this response.
+      operationId: listWebhooks
+      tags:
+        - Webhooks
+      responses:
+        '200':
+          description: List of registered webhooks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWebhooksResponse'
+              example:
+                webhooks:
+                  - id: 4f2c…
+                    label: prod-workflows
+                    url: https://api.yourapp.com/halliday/webhooks
+                    event_types:
+                      - WORKFLOW_COMPLETED
+                      - WORKFLOW_FAILED
+                    auth_header_name: null
+                    created_at: '2026-06-20T12:00:00.000Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+    patch:
+      summary: Update a webhook
+      description: >
+        Update a registered webhook. `label` identifies which webhook to update
+        and cannot be changed.
+
+        The editable fields are **`url`** and **`auth_header`** (pass
+        `auth_header: null` to
+
+        remove a previously set header). `event_types` is not updatable — to
+        change which events a
+
+        webhook subscribes to, delete it and create a new one. To change the
+        signing secret, use the
+
+        rotate-secret endpoint. A successful update returns `200` with an empty
+        body.
+      operationId: updateWebhook
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookRequest'
+            example:
+              label: prod-workflows
+              url: https://api.yourapp.com/halliday/webhooks/v2
+      responses:
+        '200':
+          description: Webhook updated successfully (empty body)
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                errors:
+                  - code: invalid_type
+                    expected: string
+                    path:
+                      - label
+                    message: 'Invalid input: expected string, received undefined'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '404':
+          description: Webhook not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: No webhook with label 'prod-workflows' found
+    delete:
+      summary: Delete a webhook
+      description: |
+        Delete a registered webhook, identified by its `label`.
+      operationId: deleteWebhook
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteWebhookRequest'
+            example:
+              label: prod-workflows
+      responses:
+        '200':
+          description: Webhook deleted successfully (empty body)
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '404':
+          description: Webhook not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: No webhook with label 'prod-workflows' found
+  /orgs/webhooks/rotate-secret:
+    post:
+      summary: Rotate the signing secret
+      description: >
+        Generate a new signing secret for a webhook. The new key is added
+        immediately and signs
+
+        alongside any existing keys, so deliveries carry multiple `v1=`
+        signatures during the overlap
+
+        and you can roll the secret in your verifier without downtime.
+
+
+        The previous keys are only phased out if you pass `retire_after`
+        (floored to at least 24h from
+
+        now). **Omit `retire_after` and the previous secret stays active
+        indefinitely** — both keep
+
+        signing. The response returns the webhook `id` and the new
+        `signing_secret`; store it now, as
+
+        it is not retrievable later.
+      operationId: rotateWebhookSecret
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RotateSecretRequest'
+            example:
+              label: prod-workflows
+              retire_after: '2026-07-01T00:00:00.000Z'
+      responses:
+        '200':
+          description: New signing secret issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RotateSecretResponse'
+              example:
+                id: 4f2c…
+                signing_secret: d4e5f6…
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                errors:
+                  - code: invalid_type
+                    expected: string
+                    path:
+                      - label
+                    message: 'Invalid input: expected string, received undefined'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: Invalid API key
+        '404':
+          description: Webhook not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - kind: other
+                    message: No webhook with label 'prod-workflows' found
+webhooks:
+  workflowStatusChanged:
+    post:
+      summary: Workflow status changed
+      description: >
+        This is the HTTP `POST` request **Halliday sends to your registered
+        `url`** when a workflow
+
+        reaches a terminal state — it is not an endpoint you call. Respond with
+        any `2xx` within the
+
+        10-second timeout to acknowledge; anything else (or a timeout) is
+        treated as a failed delivery
+
+        and retried.
+
+
+        ## Verifying the signature
+
+
+        Each delivery carries an `X-Halliday-Signature` header: a
+        comma-separated list of `v1=0x<hex>`
+
+        values, where each `<hex>` is `HMAC-SHA256(raw_body)` computed with an
+        active signing secret
+
+        (used as a UTF-8 string), prefixed with `0x`. During a secret rotation
+        more than one signature
+
+        is present — treat the request as valid if **any** entry matches. Always
+        verify against the
+
+        **raw request body**, before JSON parsing.
+
+
+        If you configured an `auth_header` when registering the webhook,
+        Halliday also includes that
+
+        custom header on every delivery — check it alongside the signature.
+
+
+        ```js
+
+        const crypto = require("crypto");
+
+
+        function verifyHallidaySignature(rawBody, headerValue, signingSecret) {
+          const expected = crypto
+            .createHmac("sha256", signingSecret) // secret used as UTF-8 string
+            .update(rawBody)
+            .digest("hex");
+
+          return headerValue
+            .split(",")
+            .map((s) => s.trim().replace(/^v1=/, "").replace(/^0x/, ""))
+            .some((sig) =>
+              sig.length === expected.length &&
+              crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))
+            );
+        }
+
+        ```
+
+
+        ## Delivery & retry semantics
+
+
+        - **Acknowledgement:** any `2xx` response within the 10-second timeout.
+
+        - **Retries:** up to 12 attempts within a 24-hour window, after which
+        the delivery is marked `FAILED`.
+
+        - **Backoff:** exponential with jitter — roughly 1m, 5m, 15m, 1h, 2h,
+        4h, then 8h between attempts.
+
+        - **Idempotency:** a given `(workflow_id, webhook, event_type)` is
+        enqueued once. De-duplicate on
+          the delivery `id`, since a retried delivery reuses the same `id`.
+      operationId: workflowStatusChanged
+      tags:
+        - Webhooks
+      security: []
+      parameters:
+        - name: X-Halliday-Signature
+          in: header
+          required: true
+          description: >-
+            Comma-separated list of `v1=0x<hex>` HMAC-SHA256 signatures over the
+            raw request body.
+          schema:
+            type: string
+          example: >-
+            v1=0x9fc719f93a352ffac9b6a7f5f360e77dccc957f2abaaeba6091a69c29f42520e
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookDelivery'
+            example:
+              id: 9555b9ed-1d0c-47ad-9e41-056fb4fe087e
+              time: '2026-06-22T18:04:11.000Z'
+              event_type: WORKFLOW_COMPLETED
+              event:
+                workflow_id: e050f684-7b3d-407a-98e7-5dfe11860317
+                status: COMPLETE
+      responses:
+        '200':
+          description: >
+            Return any `2xx` to acknowledge receipt. Any other status — or no
+            response within 10
+
+            seconds — is treated as a failed delivery and retried.
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API_KEY
+  schemas:
+    ChainInfo:
+      type: object
+      required:
+        - chain_id
+        - network
+        - address_family
+        - is_testnet
+      properties:
+        chain_id:
+          type: object
+          description: Chain ID for the network
+          example:
+            \#: 1
+        network:
+          type: string
+          description: Network name
+          example: ethereum
+        address_family:
+          type: string
+          description: Address family for the chain
+          enum:
+            - EVM
+            - SOL
+            - BTC
+            - TON
+            - TRON
+            - ALEO
+            - DOGE
+            - LTC
+            - XRPL
+          example: EVM
+        native_currency:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Ether
+            symbol:
+              type: string
+              example: ETH
+            decimals:
+              type: number
+              example: 18
+          required:
+            - name
+            - symbol
+            - decimals
+        is_testnet:
+          type: boolean
+          description: Whether this is a testnet
+          example: false
+        explorer:
+          type: string
+          format: uri
+          description: Block explorer URL
+          example: https://etherscan.io
+        image:
+          type: string
+          format: uri
+          description: Chain logo URL
+        rpc:
+          type: string
+          format: uri
+          description: RPC endpoint URL
+    AssetDetails:
+      oneOf:
+        - $ref: '#/components/schemas/FiatDetails'
+        - $ref: '#/components/schemas/TokenDetails'
+    FiatDetails:
+      type: object
+      required:
+        - issuer
+        - name
+        - symbol
+        - decimals
+      properties:
+        issuer:
+          type: string
+          description: Issuer of the fiat
+          example: USA
+        name:
+          type: string
+          description: Full currency name
+          example: US Dollar
+        symbol:
+          type: string
+          description: Currency symbol
+          example: USD
+        decimals:
+          type: number
+          minimum: 0
+          maximum: 18
+          description: Number of decimal places
+          example: 2
+        alias:
+          type: string
+          description: Alternative symbol or alias
+        image_url:
+          type: string
+          format: uri
+          description: Currency icon URL
+    TokenDetails:
+      type: object
+      required:
+        - chain
+        - address
+        - name
+        - symbol
+        - decimals
+      properties:
+        chain:
+          type: string
+          description: Blockchain network
+          example: ethereum
+        address:
+          type: string
+          description: Token contract address
+          example: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+        name:
+          type: string
+          description: Token name
+          example: USD Coin
+        symbol:
+          type: string
+          description: Token symbol
+          example: USDC
+        decimals:
+          type: number
+          minimum: 0
+          maximum: 18
+          description: Token decimals
+          example: 6
+        alias:
+          type: string
+          description: Alternative symbol or alias
+        image_url:
+          type: string
+          format: uri
+          description: Token icon URL
+        is_native:
+          type: boolean
+          description: Whether this is the native token
+          example: false
+        wrapper:
+          type: string
+          description: Wrapper token symbol
+        is_oft:
+          type: boolean
+          description: Whether this token is an OFT (Omnichain Fungible Token)
+        coingecko_id:
+          type: string
+          description: CoinGecko identifier for the token
+    Asset:
+      type: string
+      description: >-
+        Identifier in the token format ("chain:address") or fiat currency code
+        ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    Fiat:
+      type: string
+      description: Fiat currency code
+      example: USD
+    Token:
+      type: string
+      description: Token identifier in the format "chain:address"
+      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    AssetAmount:
+      type: object
+      required:
+        - asset
+        - amount
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+        amount:
+          type: string
+          description: Amount as a string to preserve precision
+          example: '1'
+    TokenAmount:
+      type: object
+      required:
+        - token
+        - amount
+      properties:
+        token:
+          $ref: '#/components/schemas/Token'
+        amount:
+          type: string
+          description: >-
+            Amount of the token to withdraw, represented as a string to preserve
+            precision
+    QuoteRequest:
+      type: object
+      required:
+        - request
+        - price_currency
+      properties:
+        request:
+          $ref: '#/components/schemas/FixedInputQuoteRequest'
+        price_currency:
+          type: string
+          description: Currency that all prices are denominated in
+          example: USD
+        onramps:
+          type: array
+          items:
+            type: string
+          description: Filter by specific onramp providers
+          example:
+            - moonpay
+            - coinbase
+        onramp_methods:
+          type: array
+          items:
+            type: string
+            enum:
+              - CREDIT_CARD
+              - DEBIT_CARD
+              - ACH
+              - FIAT_BALANCE
+              - TOKEN_BALANCE
+              - APPLE_PAY
+              - PAYPAL
+              - VENMO
+              - REVOLUT
+              - GOOGLE_PAY
+              - SEPA
+              - FASTER_PAYMENTS
+              - PIX
+              - UPI
+              - WIRE
+          description: Filter by onramp payment methods
+          example:
+            - CREDIT_CARD
+            - ACH
+            - APPLE_PAY
+        customer_ip_address:
+          type: string
+          description: IP address of the customer
+        customer_id:
+          type: string
+          description: Customer ID for tracking
+        parent_payment_id:
+          type: string
+          description: >-
+            Optional parent payment identifier used when creating a quote from
+            an existing payment.
+        label:
+          type: string
+          maxLength: 255
+          description: Optional label for the payment.
+        features:
+          type: array
+          items:
+            type: string
+            enum:
+              - BETA_EDGES
+              - ORG_BETA_EDGES
+              - ORG_EDGES
+          description: Feature flags to enable for this quote.
+        rev_share_name:
+          type: string
+          description: Revenue share configuration name.
+        allow_unsafe_transfer_out:
+          type: boolean
+          description: Allow unsafe transfer out operations.
+        show_all_issues:
+          type: boolean
+          description: Return all validation issues instead of failing on the first.
+        allow_unsafe_slippage:
+          type: boolean
+          description: Allow quotes with higher than normal slippage.
+        allow_exceed_max_input_limit:
+          type: boolean
+          description: Allow quotes that exceed the maximum input limit.
+        use_intent_refund:
+          type: boolean
+          description: Use intent-based refund flow.
+        hops:
+          type: array
+          items:
+            type: string
+          description: Intermediate chain hops for routing.
+    FixedInputQuoteRequest:
+      type: object
+      required:
+        - kind
+        - fixed_input_amount
+        - output_asset
+      properties:
+        kind:
+          type: string
+          enum:
+            - FIXED_INPUT
+        fixed_input_amount:
+          $ref: '#/components/schemas/AssetAmount'
+        output_asset:
+          $ref: '#/components/schemas/Asset'
+        dest_address:
+          type: string
+          description: Optional destination address for the output tokens.
+        custom_actions:
+          type: object
+          description: Optional custom onchain actions to execute as part of the payment.
+          properties:
+            actions:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                      - CallImmediateAction
+                  target:
+                    type: string
+                    description: Target contract address.
+                  value:
+                    type: string
+                    description: Native token value to send.
+                  calldata:
+                    type: string
+                    description: Encoded calldata for the contract call.
+            user_estimated_gas:
+              type: string
+              description: Estimated gas for the custom actions.
+    QuoteResponse:
+      type: object
+      required:
+        - quote_request
+        - quotes
+        - current_prices
+        - price_currency
+        - state_token
+        - quoted_at
+        - accept_by
+        - failures
+        - limits
+      properties:
+        quote_request:
+          $ref: '#/components/schemas/QuoteRequest'
+        quotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quote'
+        current_prices:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping of asset symbols to their unit prices
+          example:
+            USD: '1.00'
+            ethereum:0x: '4200'
+            ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48: '1.00'
+        price_currency:
+          type: string
+          description: Currency that all prices are denominated in
+          example: USD
+        state_token:
+          type: string
+          description: >
+            Signed state token containing routing and payment flow information.
+
+            This value must be passed unmodified in subsequent API calls.
+
+            Do not attempt to parse or modify this data as it is
+            cryptographically signed.
+        quoted_at:
+          type: string
+          format: date-time
+          description: |
+            Timestamp of when the quote was created, in UTC ISO 8601 format
+        accept_by:
+          type: string
+          format: date-time
+          description: |
+            Timestamp of when the quote will expire, in UTC ISO 8601 format
+        failures:
+          type: array
+          description: Providers that failed to return a quote.
+          items:
+            $ref: '#/components/schemas/FailureContent'
+        limits:
+          type: array
+          description: Input amount limits for the quote.
+          items:
+            type: object
+            properties:
+              min:
+                type: string
+                description: Minimum input amount.
+              max:
+                type: string
+                description: Maximum input amount.
+    QuotedEntry:
+      type: object
+      required:
+        - fees
+        - output_amount
+        - route
+      properties:
+        output_amount:
+          $ref: '#/components/schemas/AssetAmount'
+        fees:
+          $ref: '#/components/schemas/Fees'
+        onramp:
+          type: string
+          description: Onramp provider name
+        onramp_method:
+          type: string
+          enum:
+            - CREDIT_CARD
+            - DEBIT_CARD
+            - ACH
+            - FIAT_BALANCE
+            - TOKEN_BALANCE
+            - APPLE_PAY
+            - PAYPAL
+            - VENMO
+            - REVOLUT
+            - GOOGLE_PAY
+            - SEPA
+            - FASTER_PAYMENTS
+            - PIX
+            - UPI
+            - WIRE
+          description: Payment method
+          example: CREDIT_CARD
+        route:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuotedRouteItem'
+          description: Quoted workflow steps and their effects
+    Quote:
+      allOf:
+        - $ref: '#/components/schemas/QuotedEntry'
+        - type: object
+          properties:
+            payment_id:
+              type: string
+              description: Unique payment identifier
+      required:
+        - payment_id
+    FailureContent:
+      type: object
+      required:
+        - service_ids
+        - latency_seconds
+      properties:
+        service_ids:
+          type: array
+          description: Providers that failed to return quotes.
+          items:
+            type: string
+        latency_seconds:
+          type: number
+          format: float
+          description: Time taken for the failed quote attempt.
+        issues:
+          type: array
+          description: Optional list of structured issues describing the failure.
+          items:
+            $ref: '#/components/schemas/Issue'
+    FulfilledEntry:
+      type: object
+      required:
+        - route
+      properties:
+        output_amount:
+          $ref: '#/components/schemas/AssetAmount'
+        fees:
+          $ref: '#/components/schemas/Fees'
+        onramp:
+          type: string
+          description: Onramp provider name
+        onramp_method:
+          type: string
+          enum:
+            - CREDIT_CARD
+            - DEBIT_CARD
+            - ACH
+            - FIAT_BALANCE
+            - TOKEN_BALANCE
+            - APPLE_PAY
+            - PAYPAL
+            - VENMO
+            - REVOLUT
+            - GOOGLE_PAY
+            - SEPA
+            - FASTER_PAYMENTS
+            - PIX
+            - UPI
+            - WIRE
+          description: Payment method
+          example: CREDIT_CARD
+        route:
+          type: array
+          items:
+            $ref: '#/components/schemas/FulfilledRouteItem'
+          description: In-progress workflow steps, statuses, and their effects
+    Fees:
+      type: object
+      required:
+        - total_fees
+        - conversion_fees
+        - network_fees
+        - business_fees
+        - currency_symbol
+      properties:
+        total_fees:
+          type: string
+          description: Total fees amount
+        conversion_fees:
+          type: string
+          description: Ramps + bridge + DEX fees
+        network_fees:
+          type: string
+          description: Blockchain gas fees
+        business_fees:
+          type: string
+          description: Developer integration fees
+        currency_symbol:
+          type: string
+          pattern: ^[a-zA-Z]\w{1,7}$
+          description: Fiat currency symbol that the fees are denominated in (e.g., "USD")
+          example: USD
+    ConfirmPaymentResponse:
+      type: object
+      required:
+        - quote_request
+        - quote
+      properties:
+        quote:
+          $ref: '#/components/schemas/Quote'
+        current_prices:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping of asset symbols to their unit prices
+          example:
+            USD: '1.00'
+            ethereum:0x: '4200'
+            ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48: '1.00'
+        price_currency:
+          type: string
+          description: Currency that all prices are denominated in
+          example: USD
+    Instruction:
+      oneOf:
+        - $ref: '#/components/schemas/OnrampWidgetInstruction'
+        - $ref: '#/components/schemas/SwapInstruction'
+        - $ref: '#/components/schemas/ErrorWithdrawOrRolloverInstruction'
+      discriminator:
+        propertyName: instruction_type
+    OnrampWidgetInstruction:
+      type: object
+      required:
+        - instruction_type
+        - payment_id
+        - onramp_url
+        - deposit_info
+        - onramp_currency
+      properties:
+        instruction_type:
+          type: string
+          enum:
+            - ONRAMP_WIDGET
+        onramp_url:
+          type: string
+          description: URL to query to get onramp details and redirect to onramp
+          example: https://app.halliday.xyz/funding?payment_id=pay123&...
+        payment_id:
+          type: string
+          description: ID of the payment to onramp
+        deposit_info:
+          type: object
+          required:
+            - deposit_token
+            - deposit_amount
+            - deposit_address
+            - deposit_chain
+          properties:
+            deposit_token:
+              $ref: '#/components/schemas/Token'
+              description: Token required for deposit
+            deposit_amount:
+              type: string
+              description: Amount of the token required for deposit
+              example: '100.50'
+            deposit_address:
+              type: string
+              description: Contract address for payment
+            deposit_chain:
+              type: string
+              description: Blockchain for payment contract
+              example: ethereum
+        onramp_currency:
+          $ref: '#/components/schemas/Fiat'
+    SwapInstruction:
+      type: object
+      required:
+        - instruction_type
+        - deposit_info
+      properties:
+        instruction_type:
+          type: string
+          enum:
+            - SWAP
+        deposit_info:
+          type: object
+          required:
+            - deposit_token
+            - deposit_amount
+            - deposit_address
+            - deposit_chain
+          properties:
+            deposit_token:
+              $ref: '#/components/schemas/Token'
+              description: Token required for deposit
+            deposit_amount:
+              type: string
+              description: Amount of the token required for deposit
+              example: '100.50'
+            deposit_address:
+              type: string
+              description: Contract address for payment
+            deposit_chain:
+              type: string
+              description: Blockchain for payment contract
+              example: ethereum
+    ErrorWithdrawOrRolloverInstruction:
+      type: object
+      required:
+        - instruction_type
+        - error_message
+        - asset_amounts
+      properties:
+        instruction_type:
+          type: string
+          enum:
+            - ERROR_WITHDRAW_OR_ROLLOVER
+          description: >-
+            Instruction type for error handling with withdrawal or rollover
+            option
+        error_message:
+          type: string
+          description: Brief explanation of the error.
+        asset_amounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetAmount'
+        parent_payment_id:
+          type: string
+          description: ID of the parent payment where the funds are being rolled over from.
+      description: >
+        When an error occurs during payment processing, this instruction
+        provides:
+
+        1. Information about the error
+
+        2. The assets and amounts to withdraw or rollover
+
+        3. For rollovers, the parent payment ID of the payment that encountered
+        the error
+
+        4. To retry the payment, call /payments/quotes with the payment_id to
+        get new quote options.
+    BalanceQuery:
+      type: object
+      required:
+        - address
+        - token
+      properties:
+        address:
+          type: string
+          description: One-time wallet address associated with the payment.
+          example: '0xabc1234567890abcdef1234567890abcdef1234'
+        token:
+          $ref: '#/components/schemas/Token'
+          description: Token identifier to query in the wallet.
+          example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    RequestForBalances:
+      type: object
+      properties:
+        workflow_id:
+          type: string
+          description: >-
+            Payment identifier whose one-time wallet balances should be
+            returned.
+          example: pay_abc123
+        custom_queries:
+          type: array
+          description: Additional wallet and token combinations to query.
+          items:
+            $ref: '#/components/schemas/BalanceQuery'
+    BalanceResult:
+      type: object
+      required:
+        - address
+        - token
+        - account
+        - value
+      properties:
+        address:
+          type: string
+          description: One-time wallet address that was queried.
+          example: '0xabc1234567890abcdef1234567890abcdef1234'
+        token:
+          $ref: '#/components/schemas/Token'
+          description: Token identifier that was queried.
+          example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+        value:
+          oneOf:
+            - type: object
+              required:
+                - kind
+                - amount
+              properties:
+                kind:
+                  type: string
+                  enum:
+                    - amount
+                amount:
+                  $ref: '#/components/schemas/Amount'
+            - type: object
+              required:
+                - kind
+              properties:
+                kind:
+                  type: string
+                  enum:
+                    - error
+          discriminator:
+            propertyName: kind
+    BalancesResponse:
+      type: object
+      required:
+        - balance_results
+      properties:
+        balance_results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BalanceResult'
+    RequestForPaymentBalances:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+          description: Payment identifier whose associated wallets should be queried.
+          example: 41b16a6f-704e-44ba-9964-2b66df8a73e8
+        custom_queries:
+          type: array
+          description: Additional wallet and token combinations to query.
+          items:
+            type: object
+            required:
+              - address
+              - token
+            properties:
+              address:
+                type: string
+                description: Wallet address to query.
+                example: '0xabc1234567890abcdef1234567890abcdef1234'
+              token:
+                $ref: '#/components/schemas/Token'
+                description: Token identifier to query at the wallet address.
+                example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    PaymentBalancesResult:
+      type: object
+      required:
+        - address
+        - token
+        - account
+        - value
+      properties:
+        address:
+          type: string
+          description: Wallet address that was queried.
+          example: '0xabc1234567890abcdef1234567890abcdef1234'
+        token:
+          $ref: '#/components/schemas/Token'
+          description: Token identifier that was queried.
+          example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+        account:
+          type: string
+          description: Account type for the balance.
+          enum:
+            - INTENT
+            - SPW
+        value:
+          oneOf:
+            - type: object
+              required:
+                - kind
+                - amount
+                - withdrawal_fee
+              properties:
+                kind:
+                  type: string
+                  enum:
+                    - amount
+                amount:
+                  type: string
+                  description: Balance amount as a decimal string.
+                withdrawal_fee:
+                  type: string
+                  nullable: true
+                  description: Withdrawal fee amount, or null if not applicable.
+            - type: object
+              required:
+                - kind
+              properties:
+                kind:
+                  type: string
+                  enum:
+                    - error
+          discriminator:
+            propertyName: kind
+    PaymentBalancesResponse:
+      type: object
+      required:
+        - balance_results
+      properties:
+        balance_results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentBalancesResult'
+    WithdrawPaymentAuthorizationRequest:
+      type: object
+      required:
+        - payment_id
+        - token_amounts
+        - recipient_address
+      properties:
+        payment_id:
+          type: string
+          description: ID of the payment to withdraw
+        token_amounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenAmount'
+          description: >-
+            List of token amounts to withdraw back to the owner or to a requoted
+            processing address
+        recipient_address:
+          type: string
+          description: >-
+            On-chain address to withdraw the funds to. The assets will go to the
+            address on the same chain the assets are on.
+        withdraw_account:
+          type: string
+          enum:
+            - INTENT
+            - SPW
+          default: SPW
+          description: Type of account to withdraw from.
+    WithdrawPaymentAuthorizationResponse:
+      type: object
+      required:
+        - type
+        - signature_type
+        - payment_id
+        - withdraw_authorization
+        - state_token
+      properties:
+        signature_type:
+          type: string
+          enum:
+            - EIP712
+            - EIP191
+          description: Signature type required for the withdrawal authorization.
+        payment_id:
+          type: string
+          description: ID of the withdrawal transaction
+        withdraw_authorization:
+          type: string
+          description: >
+            Authorization data to sign. For EIP712, this is a JSON string to
+            parse and pass to signTypedData. For EIP191, pass this string
+            directly to signMessage.
+        state_token:
+          type: string
+          description: Opaque state token to pass back when confirming the withdrawal.
+    WithdrawPaymentRequest:
+      type: object
+      required:
+        - payment_id
+        - token_amounts
+        - recipient_address
+        - owner_signature
+      properties:
+        payment_id:
+          type: string
+          description: ID of the payment to withdraw
+        token_amounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenAmount'
+          description: >-
+            List of token amounts to withdraw back to the owner or to a requoted
+            processing address
+        recipient_address:
+          type: string
+          description: >-
+            On-chain address to withdraw the funds to, on the same chain as the
+            assets to withdraw.
+        owner_signature:
+          type: string
+          description: >-
+            The payment owner's signature on the withdrawal_authorization,
+            authorizing the withdrawal
+        withdraw_account:
+          type: string
+          enum:
+            - INTENT
+            - SPW
+          default: SPW
+          description: >-
+            Type of account to withdraw from. Use the account value from the
+            balance result.
+        payload:
+          type: string
+          description: >-
+            The withdraw_authorization string returned from the POST
+            /payments/withdraw response.
+    WithdrawPaymentResponse:
+      type: object
+      required:
+        - payment_id
+        - transaction_hash
+      properties:
+        payment_id:
+          type: string
+          description: ID of the payment to withdraw
+        transaction_hash:
+          type: string
+          description: Blockchain transaction hash for the withdrawal
+    PaymentStatus:
+      type: object
+      required:
+        - payment_id
+        - org_id
+        - status
+        - funded
+        - created_at
+        - updated_at
+        - initiate_fund_by
+        - quoted
+        - fulfilled
+        - current_prices
+        - price_currency
+        - processing_addresses
+        - owner_chain
+        - owner_address
+        - destination_address
+        - client_redirect_url
+        - declaration
+      properties:
+        payment_id:
+          type: string
+        org_id:
+          type: string
+          description: Organization identifier
+        status:
+          type: string
+          enum:
+            - PENDING
+            - COMPLETE
+            - FAILED
+            - EXPIRED
+            - WITHDRAW_PENDING
+            - WITHDRAWN
+            - TAINTED
+            - UNCONFIRMED
+        funded:
+          type: boolean
+          description: Whether the payment has been funded
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        initiate_fund_by:
+          type: string
+          format: date-time
+          description: Deadline for funding the payment.
+        completed_at:
+          type: string
+          format: date-time
+        quote_request:
+          $ref: '#/components/schemas/QuoteRequest'
+          description: The original quote request.
+        quoted:
+          $ref: '#/components/schemas/QuotedEntry'
+        fulfilled:
+          $ref: '#/components/schemas/FulfilledEntry'
+        current_prices:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping of asset symbols to their unit prices
+          example:
+            USD: '1.00'
+            ethereum:0x: '4200'
+            ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48: '1.00'
+        price_currency:
+          $ref: '#/components/schemas/Asset'
+          description: Fiat asset used for pricing
+        customer_id:
+          type: string
+          description: ID of the customer who created the payment
+        label:
+          type: string
+          description: Optional payment label
+          maxLength: 255
+        processing_addresses:
+          type: array
+          items:
+            type: object
+            required:
+              - chain
+              - address
+              - factory
+            properties:
+              chain:
+                type: string
+                description: Blockchain network
+                example: ethereum
+              address:
+                type: string
+                description: Payment processing contract address
+              factory:
+                type: string
+                description: Factory contract address
+        owner_chain:
+          type: string
+          description: Chain identifier for the owner
+        owner_address:
+          type: string
+          description: Address of the owner of the payment
+        destination_address:
+          type: string
+          description: Address of the destination of the payment
+        next_instruction:
+          $ref: '#/components/schemas/NextInstruction'
+          nullable: true
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+          description: Payment validation issues
+        parent_payment_id:
+          type: string
+          format: uuid
+          description: Parent payment reference
+        client_redirect_url:
+          type: string
+          nullable: true
+          description: Client redirect URL
+        declaration:
+          type: object
+          nullable: true
+          description: Declaration object
+    PaymentStatusRequest:
+      type: object
+      required:
+        - payment_id
+      properties:
+        payment_id:
+          type: string
+          description: Unique payment identifier to fetch status for.
+    NextInstruction:
+      description: >-
+        Instruction payload that returns the funding pages if the payment
+        requires funding.
+      oneOf:
+        - $ref: '#/components/schemas/OnrampOrTransferInInstruction'
+        - $ref: '#/components/schemas/UserVerifyInstruction'
+      discriminator:
+        propertyName: type
+        mapping:
+          ONRAMP: '#/components/schemas/OnrampOrTransferInInstruction'
+          TRANSFER_IN: '#/components/schemas/OnrampOrTransferInInstruction'
+          USER_VERIFY: '#/components/schemas/UserVerifyInstruction'
+      example:
+        type: ONRAMP
+        payment_id: <string>
+        funding_page_url: https://app.halliday.xyz/funding/${payment_id}
+        deposit_info:
+          - deposit_token: base:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+            deposit_amount: '4.8'
+            deposit_address: 0xaddress
+            deposit_chain: base
+    OnrampOrTransferInInstruction:
+      type: object
+      required:
+        - type
+        - payment_id
+        - funding_page_url
+        - deposit_info
+      properties:
+        type:
+          type: string
+          enum:
+            - ONRAMP
+            - TRANSFER_IN
+          description: Discriminator for this instruction type.
+        payment_id:
+          type: string
+          description: The payment this instruction is associated with.
+        funding_page_url:
+          type: string
+          format: uri
+          description: URL where the user can complete funding for this payment.
+        deposit_info:
+          type: array
+          description: One or more deposit routes to fund the payment.
+          items:
+            $ref: '#/components/schemas/DepositInfo'
+    UserVerifyInstruction:
+      type: object
+      required:
+        - type
+        - verification_token
+        - verifications
+      properties:
+        type:
+          type: string
+          enum:
+            - USER_VERIFY
+          description: Discriminator for this instruction type.
+        verification_token:
+          type: string
+          description: Token to submit with verification signatures.
+        verifications:
+          type: array
+          description: List of verifications the user must complete.
+          items:
+            type: object
+            required:
+              - reason
+              - signature_type
+              - payload
+            properties:
+              reason:
+                type: string
+                enum:
+                  - EVM_OWNER
+                  - EVM_WITHDRAWAL
+                description: Reason for the verification.
+              signature_type:
+                type: string
+                enum:
+                  - EIP712
+                  - EIP191
+                description: Signature type required.
+              payload:
+                type: string
+                description: Payload to sign.
+    DepositInfo:
+      type: object
+      required:
+        - deposit_token
+        - deposit_amount
+        - deposit_address
+        - deposit_chain
+      properties:
+        deposit_token:
+          $ref: '#/components/schemas/Asset'
+        deposit_amount:
+          type: string
+          description: Amount to deposit, as a decimal string.
+          example: '4.8'
+        deposit_address:
+          type: string
+          description: Address to which funds will be deposited.
+        deposit_chain:
+          type: string
+          description: Network on which the deposit will be made (e.g., base, ethereum).
+          example: base
+    Issue:
+      oneOf:
+        - $ref: '#/components/schemas/AmountIssue'
+        - $ref: '#/components/schemas/AmountDownstreamIssue'
+        - $ref: '#/components/schemas/FundingIssue'
+        - $ref: '#/components/schemas/OwnerIssue'
+        - $ref: '#/components/schemas/GeolocationIssue'
+        - $ref: '#/components/schemas/ProviderIssue'
+        - $ref: '#/components/schemas/PayinMethodIssue'
+        - $ref: '#/components/schemas/OtherIssue'
+        - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
+    AmountIssue:
+      type: object
+      required:
+        - kind
+        - asset
+        - given
+        - limits
+        - source
+        - message
+        - reason
+      properties:
+        kind:
+          type: string
+          enum:
+            - amount
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+            - TOO_LOW
+            - TOO_HIGH
+            - NO_VALID_AMOUNT
+            - UNKNOWN
+    AmountDownstreamIssue:
+      type: object
+      required:
+        - kind
+        - asset
+        - given
+        - limits
+        - source
+        - message
+        - reason
+      properties:
+        kind:
+          type: string
+          enum:
+            - amount-downstream
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+            - TOO_LOW
+            - TOO_HIGH
+            - NO_VALID_AMOUNT
+            - UNKNOWN
+    GeolocationIssue:
+      type: object
+      required:
+        - kind
+        - message
+      properties:
+        kind:
+          type: string
+          enum:
+            - geolocation
+        message:
+          type: string
+    ProviderIssue:
+      type: object
+      required:
+        - kind
+        - message
+      properties:
+        kind:
+          type: string
+          enum:
+            - provider
+        message:
+          type: string
+    PayinMethodIssue:
+      type: object
+      required:
+        - kind
+        - message
+      properties:
+        kind:
+          type: string
+          enum:
+            - payin_method
+        message:
+          type: string
+    OtherIssue:
+      type: object
+      required:
+        - kind
+        - message
+      properties:
+        kind:
+          type: string
+          enum:
+            - other
+        message:
+          type: string
+    FundingIssue:
+      type: object
+      required:
+        - kind
+        - token
+        - balance
+      properties:
+        kind:
+          type: string
+          enum:
+            - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
+          type: string
+          description: Current token balance at the funding address.
+    OwnerIssue:
+      type: object
+      required:
+        - kind
+        - message
+        - mitigation
+      properties:
+        kind:
+          type: string
+          enum:
+            - owner
+        message:
+          type: string
+        mitigation:
+          type: string
+          enum:
+            - change
+            - verify
+    UnknownIssue:
+      type: object
+      required:
+        - kind
+        - message
+      properties:
+        kind:
+          type: string
+          enum:
+            - unknown
+        message:
+          type: string
+    Amount:
+      type: string
+      description: A decimal amount string.
+    Limits:
+      type: object
+      properties:
+        min:
+          type: string
+          description: Minimum amount as a decimal string.
+        max:
+          type: string
+          description: Maximum amount as a decimal string.
+    ErrorResponse:
+      type: object
+      required:
+        - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
+    QuotedRouteItem:
+      type: object
+      required:
+        - type
+        - net_effect
+        - pieces_info
+      properties:
+        type:
+          type: string
+          enum:
+            - ONRAMP
+            - ONCHAIN_STEP
+            - USER_FUND
+        net_effect:
+          $ref: '#/components/schemas/EffectAmount'
+        pieces_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/PieceInfo'
+        step_index:
+          type: number
+    FulfilledRouteItem:
+      type: object
+      required:
+        - status
+        - type
+        - net_effect
+        - pieces_info
+      properties:
+        status:
+          type: string
+          enum:
+            - PENDING
+            - COMPLETE
+            - UNREACHABLE
+            - FAILED
+        type:
+          type: string
+          enum:
+            - ONRAMP
+            - ONCHAIN_STEP
+            - USER_FUND
+        net_effect:
+          $ref: '#/components/schemas/EffectAmount'
+        pieces_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/PieceInfo'
+        step_index:
+          type: number
+        transaction_hash:
+          type: string
+          description: Blockchain transaction hash for the step
+    PieceInfo:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - user_fund
+            - onramp
+            - poll
+            - bridge
+            - rev_share
+            - transfer_out
+            - convert
+            - custom_call
+    Effect:
+      type: object
+      required:
+        - consume
+        - produce
+      properties:
+        consume:
+          type: array
+          items:
+            $ref: '#/components/schemas/Change'
+        produce:
+          type: array
+          items:
+            $ref: '#/components/schemas/Change'
+    ChangeAmount:
+      type: object
+      required:
+        - account
+        - resource
+        - amount
+      properties:
+        account:
+          type: string
+          enum:
+            - USER
+            - DEST
+            - HALLIDAY
+            - SPW
+            - REV_SHARE
+            - BRIDGE
+        resource:
+          $ref: '#/components/schemas/Resource'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        tx_id:
+          type: string
+          description: Blockchain transaction hash associated with this change.
+    EffectAmount:
+      type: object
+      required:
+        - consume
+        - produce
+      properties:
+        consume:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeAmount'
+        produce:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeAmount'
+    Change:
+      type: object
+      required:
+        - account
+        - resource
+        - amount
+      properties:
+        account:
+          type: string
+          enum:
+            - USER
+            - DEST
+            - HALLIDAY
+            - SPW
+            - REV_SHARE
+            - BRIDGE
+        resource:
+          $ref: '#/components/schemas/Resource'
+        amount:
+          type: string
+    Resource:
+      type: object
+      required:
+        - asset
+        - property
+      properties:
+        asset:
+          type: string
+        property:
+          type: string
+          enum:
+            - APPROVAL
+            - BALANCE
+            - SIDE_EFFECT
+    WebhookEventType:
+      type: string
+      description: >
+        Event type a webhook can subscribe to. `WORKFLOW_COMPLETED` fires when a
+        workflow's status
+
+        becomes `COMPLETE`; `WORKFLOW_FAILED` fires when it becomes `FAILED`.
+      enum:
+        - WORKFLOW_COMPLETED
+        - WORKFLOW_FAILED
+    WebhookAuthHeader:
+      type: object
+      description: >
+        Optional custom HTTP header that Halliday attaches to every delivery to
+        your receiver URL, so your
+
+        endpoint can authenticate inbound deliveries in addition to verifying
+        `X-Halliday-Signature`. The
+
+        `value` is write-only — it is never returned by any endpoint; the list
+        endpoint echoes only the
+
+        header name as `auth_header_name`.
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          description: Header name Halliday sends on each delivery.
+          example: X-Webhook-Token
+        value:
+          type: string
+          description: Header value. Write-only — never returned.
+          example: a-shared-secret-token
+    ValidationErrorResponse:
+      type: object
+      description: >
+        Returned when a request body fails schema validation. `errors` contains
+        one entry per
+
+        validation issue.
+      required:
+        - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+              - path
+              - message
+            properties:
+              code:
+                type: string
+                description: Validation issue code (for example `invalid_type`).
+                example: invalid_type
+              expected:
+                type: string
+                description: Expected type. Present on type-mismatch issues.
+                example: string
+              path:
+                type: array
+                description: Path to the offending field in the request body.
+                items:
+                  type:
+                    - string
+                    - integer
+                example:
+                  - label
+              message:
+                type: string
+                example: 'Invalid input: expected string, received undefined'
+    RegisterWebhookRequest:
+      type: object
+      required:
+        - url
+        - label
+        - event_types
+      properties:
+        url:
+          type: string
+          format: uri
+          description: >
+            Receiver URL. Must be HTTPS on port 443. Private/reserved IP
+            addresses are rejected (SSRF protection).
+          example: https://api.yourapp.com/halliday/webhooks
+        label:
+          type: string
+          description: >
+            Human-readable identifier, unique per org. Used to address the
+            webhook on update, rotate, and delete.
+          example: prod-workflows
+        event_types:
+          type: array
+          minItems: 1
+          description: At least one event type to subscribe to.
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+          example:
+            - WORKFLOW_COMPLETED
+            - WORKFLOW_FAILED
+        auth_header:
+          $ref: '#/components/schemas/WebhookAuthHeader'
+        signing_secret:
+          type: string
+          description: >
+            Optional. Provide your own HMAC-SHA256 signing secret instead of
+            letting Halliday generate
+
+            one. Omit this to receive a generated `signing_secret` in the
+            response.
+          example: my-own-signing-secret
+    Webhook:
+      type: object
+      description: >
+        A registered webhook including its signing secret. Returned only on
+        creation and rotation.
+      required:
+        - id
+        - label
+        - url
+        - signing_secret
+      properties:
+        id:
+          type: string
+          example: 4f2c…
+        label:
+          type: string
+          example: prod-workflows
+        url:
+          type: string
+          format: uri
+          example: https://api.yourapp.com/halliday/webhooks
+        signing_secret:
+          type: string
+          description: >
+            HMAC-SHA256 signing secret. Store it now — it is never returned
+            again from the list endpoint.
+          example: a1b2c3…
+    WebhookSummary:
+      type: object
+      description: >-
+        A registered webhook as returned by the list endpoint. Never includes
+        the signing secret.
+      required:
+        - id
+        - label
+        - url
+        - event_types
+        - auth_header_name
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 4f2c8c1a-1b2c-4d3e-8f5a-6b7c8d9e0f12
+        label:
+          type: string
+          example: prod-workflows
+        url:
+          type: string
+          format: uri
+          example: https://api.yourapp.com/halliday/webhooks
+        event_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+        auth_header_name:
+          type:
+            - string
+            - 'null'
+          description: >
+            Name of the custom delivery auth header, if one is configured (the
+            value is never returned).
+
+            `null` when no auth header is set.
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-06-20T12:00:00.000Z'
+    ListWebhooksResponse:
+      type: object
+      required:
+        - webhooks
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookSummary'
+    UpdateWebhookRequest:
+      type: object
+      required:
+        - label
+      properties:
+        label:
+          type: string
+          description: Identifies the webhook to update. Cannot be changed.
+          example: prod-workflows
+        url:
+          type: string
+          format: uri
+          description: Optional. New receiver URL. Must be HTTPS on port 443.
+          example: https://api.yourapp.com/halliday/webhooks/v2
+        auth_header:
+          description: >
+            Optional. Set or replace the custom delivery auth header, or pass
+            `null` to remove an
+
+            existing one.
+          anyOf:
+            - $ref: '#/components/schemas/WebhookAuthHeader'
+            - type: 'null'
+    DeleteWebhookRequest:
+      type: object
+      required:
+        - label
+      properties:
+        label:
+          type: string
+          example: prod-workflows
+    RotateSecretRequest:
+      type: object
+      required:
+        - label
+      properties:
+        label:
+          type: string
+          example: prod-workflows
+        retire_after:
+          type: string
+          format: date-time
+          description: >
+            Optional. When the previous signing secret(s) should stop signing.
+            Floored to at least 24h
+
+            from now. Omit to keep the previous secret active indefinitely (both
+            keep signing).
+          example: '2026-07-01T00:00:00.000Z'
+    RotateSecretResponse:
+      type: object
+      required:
+        - id
+        - signing_secret
+      properties:
+        id:
+          type: string
+          example: 4f2c…
+        signing_secret:
+          type: string
+          description: The new signing secret. Store it now — it is not retrievable later.
+          example: d4e5f6…
+    WebhookDelivery:
+      type: object
+      description: The signed JSON payload Halliday POSTs to your receiver URL.
+      required:
+        - id
+        - time
+        - event_type
+        - event
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: >-
+            Unique delivery id. Use it for idempotency — a retried delivery
+            reuses the same id.
+          example: 9555b9ed-1d0c-47ad-9e41-056fb4fe087e
+        time:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp of the event.
+          example: '2026-06-22T18:04:11.000Z'
+        event_type:
+          $ref: '#/components/schemas/WebhookEventType'
+        event:
+          type: object
+          description: The terminal workflow state.
+          required:
+            - workflow_id
+            - status
+          properties:
+            workflow_id:
+              type: string
+              format: uuid
+              example: e050f684-7b3d-407a-98e7-5dfe11860317
+            status:
+              type: string
+              description: Terminal workflow status.
+              enum:
+                - COMPLETE
+                - FAILED
+              example: COMPLETE
+tags:
+  - name: Chains
+    description: Blockchain network information and configuration
+  - name: Assets
+    description: Asset information, discovery, and supported asset pairs
+  - name: Payments
+    description: >-
+      Core payment operations including quotes, confirmation, and status
+      tracking
+  - name: Webhooks
+    description: >
+      Register HTTPS endpoints to receive signed notifications when a workflow
+      reaches a terminal
+
+      state, instead of polling for status. You subscribe to one or more event
+      types per webhook.
+
+
+      | Event type | Fires when a workflow's status becomes |
+
+      | --- | --- |
+
+      | `WORKFLOW_COMPLETED` | `COMPLETE` |
+
+      | `WORKFLOW_FAILED` | `FAILED` |
+
+
+      All management endpoints live under `/orgs/webhooks` and authenticate with
+      a secret API key
+
+      (passed as a bearer token) that has webhook access. Publishable keys
+      cannot manage webhooks.
+
+
+      **Integration checklist**
+
+
+      - Receiver is a public HTTPS endpoint (no private IPs).
+
+      - Save the `signing_secret` when you create the webhook — it is shown only
+      once.
+
+      - Verify `X-Halliday-Signature` against the raw body, accepting any of its
+      comma-separated signatures.
+
+      - Respond `2xx` quickly and do the real work afterward.
+
+      - Skip deliveries whose `id` you have already handled.

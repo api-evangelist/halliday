@@ -1,0 +1,20 @@
+{
+  "provider": "halliday",
+  "sources": [
+    "halliday-assets-api-openapi.yml",
+    "halliday-chains-api-openapi.yml",
+    "halliday-payments-api-openapi.yml",
+    "halliday-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "halliday-assets-api-openapi.yml",
+    "halliday-chains-api-openapi.yml",
+    "halliday-payments-api-openapi.yml",
+    "halliday-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

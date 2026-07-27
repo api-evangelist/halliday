@@ -1,0 +1,25 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Halliday API V2
+  version: 1.0.0
+extends: openapi/halliday-openapi-original.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-enriched: '2026-07-19'
+    x-apievangelist-artifacts:
+    - authentication/halliday-authentication.yml
+    - conventions/halliday-conventions.yml
+    - errors/halliday-problem-types.yml
+    - data-model/halliday-data-model.yml
+    - asyncapi/halliday-webhooks.yml
+    - agentic-access/halliday-agentic-access.yml
+- target: $.info
+  update:
+    x-apievangelist-auth: API key (HTTP bearer, publishable pk_ keys); secret keys required for webhook management.
+- target: $.info
+  update:
+    x-apievangelist-pagination: Cursor pagination via pagination_key request param and next_pagination_key response field.
+- target: $.info
+  update:
+    x-apievangelist-webhooks: Signed workflow-status webhooks (WORKFLOW_COMPLETED / WORKFLOW_FAILED) with rotating HMAC signing secrets.

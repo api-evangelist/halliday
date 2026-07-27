@@ -1,0 +1,47 @@
+# Halliday API V2
+
+## Docs
+
+- [Get asset details](https://docs.halliday.xyz/api-reference/assets/get-asset-details.md): Get detailed information about specific assets including metadata, symbols, and chain information.
+- [Get available input assets for a given output asset](https://docs.halliday.xyz/api-reference/assets/get-available-input-assets-for-a-given-output-asset.md): Get a list of assets that can be used as inputs for the given output assets and providers.
+- [Get available output assets for a given input asset](https://docs.halliday.xyz/api-reference/assets/get-available-output-assets-for-a-given-input-asset.md): Get a list of assets that can be received as outputs for the given input assets and providers.
+- [Get supported chains](https://docs.halliday.xyz/api-reference/chains/get-supported-chains.md): Get a list of all supported blockchain networks with their configuration details.
+- [Confirm a payment](https://docs.halliday.xyz/api-reference/payments/confirm-a-payment.md): Confirm a previously quoted payment and receive deposit instructions. Returns information on how to fund the payment (widget URL, contract address, etc.).
+- [Confirm withdrawal request](https://docs.halliday.xyz/api-reference/payments/confirm-withdrawal-request.md): Submit and execute the signed withdrawal request to return funds back to the owner or to a requoted processing address.
+- [Get payment history](https://docs.halliday.xyz/api-reference/payments/get-payment-history.md): Retrieve a paginated list of payment statuses filtered by owner. Returns an array of payment status objects and a pagination key for fetching the next page.
+- [Get payment quotes](https://docs.halliday.xyz/api-reference/payments/get-payment-quotes.md): Request quotes for payments, supporting both fixed input and fixed output scenarios. Returns multiple quote options with pricing, fees, and routing information.
+- [Get payment status](https://docs.halliday.xyz/api-reference/payments/get-payment-status.md): Get the current status of a payment, including progress through onramp/swap/offramp stages.
+- [Get wallet balances](https://docs.halliday.xyz/api-reference/payments/get-wallet-balances.md): Retrieve balances for the wallets associated with a payment. You can optionally supply additional wallet and token pairs to check alongside the payment's primary wallet.
+- [Return funds to owner or retry payment](https://docs.halliday.xyz/api-reference/payments/return-funds-to-owner-or-retry-payment.md): Request a withdrawal to return funds back to the owner or to a requoted processing address. This endpoint should be used when a payment cannot be completed and funds need to be returned.
+- [Delete a webhook](https://docs.halliday.xyz/api-reference/webhooks/delete-a-webhook.md): Delete a registered webhook, identified by its `label`.
+- [List webhooks](https://docs.halliday.xyz/api-reference/webhooks/list-webhooks.md): List the webhooks registered for your org. The signing secret is never included in this response.
+- [Register a webhook](https://docs.halliday.xyz/api-reference/webhooks/register-a-webhook.md): Register an HTTPS endpoint to receive signed event notifications when a workflow reaches a terminal state. Halliday delivers each event as an HTTP `POST` to your registered `url`, so the endpoint must accept `POST` requests. On success the response includes a `signing_secret` that is **only ever ret…
+- [Rotate the signing secret](https://docs.halliday.xyz/api-reference/webhooks/rotate-the-signing-secret.md): Generate a new signing secret for a webhook. The new key is added immediately and signs alongside any existing keys, so deliveries carry multiple `v1=` signatures during the overlap and you can roll the secret in your verifier without downtime.
+- [Update a webhook](https://docs.halliday.xyz/api-reference/webhooks/update-a-webhook.md): Update a registered webhook. `label` identifies which webhook to update and cannot be changed. The editable fields are **`url`** and **`auth_header`** (pass `auth_header: null` to remove a previously set header). `event_types` is not updatable — to change which events a webhook subscribes to, delete…
+- [Workflow status changed](https://docs.halliday.xyz/api-reference/webhooks/workflow-status-changed.md): This is the HTTP `POST` request **Halliday sends to your registered `url`** when a workflow reaches a terminal state — it is not an endpoint you call. Respond with any `2xx` within the 10-second timeout to acknowledge; anything else (or a timeout) is treated as a failed delivery and retried.
+- [Payment Recoveries API Errors](https://docs.halliday.xyz/pages/api-error-recovery-withdrawal.md)
+- [API Example Apps](https://docs.halliday.xyz/pages/api-example-apps.md)
+- [Halliday API Quickstart](https://docs.halliday.xyz/pages/api-quickstart.md)
+- [Payment Funding & Status](https://docs.halliday.xyz/pages/api-status.md)
+- [Compliance & Security](https://docs.halliday.xyz/pages/compliance-security.md)
+- [Frequently Asked Questions](https://docs.halliday.xyz/pages/faq.md)
+- [Halliday API Documentation](https://docs.halliday.xyz/pages/halliday-api-docs.md)
+- [Halliday Documentation](https://docs.halliday.xyz/pages/home.md)
+- [Claude Code Plugin and LLMs.txt](https://docs.halliday.xyz/pages/llms-info.md)
+- [One-Time Wallet (OTW) or Deposit Address](https://docs.halliday.xyz/pages/otw.md)
+- [Payment Flows](https://docs.halliday.xyz/pages/payment-flows.md)
+- [Supported Payment Methods](https://docs.halliday.xyz/pages/payment-method-support.md)
+- [SDK Widget Hello World](https://docs.halliday.xyz/pages/payments-hello-world.md)
+- [Halliday JS SDK Widget Documentation](https://docs.halliday.xyz/pages/payments-sdk-docs.md)
+- [Payments SDK Example Apps](https://docs.halliday.xyz/pages/payments-sdk-example-apps.md)
+- [React Native Example Apps](https://docs.halliday.xyz/pages/react-native-example-apps.md)
+- [Swift & Kotlin Example Apps](https://docs.halliday.xyz/pages/swift-kotlin-native-mobile-example-apps.md)
+- [Webhooks](https://docs.halliday.xyz/pages/webhooks.md)
+
+## OpenAPI Specs
+
+- [openapi](https://docs.halliday.xyz/public/openapi.yaml)
+
+## Optional
+
+- [Blog](https://blog.halliday.xyz/)

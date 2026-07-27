@@ -1,0 +1,45 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/halliday-openapi-original.yml
+docs: https://docs.halliday.xyz/pages/api-quickstart.md
+authentication:
+  style: api-key
+  transport: HTTP bearer token in Authorization header
+  key_format: Publishable keys prefixed pk_ (public, safe for client). Secret keys required for webhook management; publishable keys cannot manage webhooks.
+  cross_ref: authentication/halliday-authentication.yml
+idempotency:
+  supported: false
+  note: No idempotency-key header/parameter documented in the API.
+pagination:
+  style: cursor
+  request_param: pagination_key
+  response_field: next_pagination_key
+  applies_to:
+  - getPaymentHistory
+metadata:
+  supported: false
+request_tracing:
+  header: null
+  note: No documented request-id/tracing header.
+versioning:
+  style: uri-host
+  current: v2
+  cross_ref: lifecycle/halliday-lifecycle.yml
+error_envelope:
+  shape: '{ "errors": [ { "kind": "<issue-kind>", "message": "..." } ] }'
+  format: custom
+  cross_ref: errors/halliday-problem-types.yml
+rate_limit_signaling:
+  documented: false
+  note: No rate-limit headers documented in the OpenAPI.
+webhooks:
+  supported: true
+  signing: HMAC signatures (v1=) with rotatable signing secret; optional custom auth_header.
+  events:
+  - WORKFLOW_COMPLETED
+  - WORKFLOW_FAILED
+  cross_ref: asyncapi/halliday-webhooks.yml
+key_concepts:
+  one_time_wallet: >
+    Each payment gets a unique deposit address (One-Time Wallet / OTW) controlled by the
+    owner wallet, which retains exclusive recovery rights.

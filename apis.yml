@@ -1,22 +1,211 @@
 aid: halliday
 name: Halliday
-description: Halliday is a company surfaced as a portfolio company of a16z and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Halliday is a web3 payments and agentic-workflow company (a16z crypto Series A) building the
+  end-to-end onchain deposit platform. Its Agentic Workflow Protocol (AWP) lets developers compose
+  high-level, AI-executable workflows behind immutable guardrails without writing smart-contract
+  code. The flagship product, Halliday Payments, is a unified cross-chain payments API and drop-in
+  widget that lets users onramp from fiat, bridge, and swap to acquire any asset on any chain in a
+  fully self-custodial way, routing intelligently across onramps (MoonPay, Transak, Stripe), swaps,
+  and bridges. The Halliday API V2 (https://v2.prod.halliday.xyz) exposes chains, assets, quotes,
+  payments, balances, withdrawals, and signed workflow webhooks, authenticated with publishable
+  API keys, alongside JS/React/React Native SDKs and a published Claude Code integration skill.
 url: https://raw.githubusercontent.com/api-evangelist/halliday/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://halliday.xyz/opengraph-image
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - a16z
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: enriched-from-portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-apis: []
+- Payments
+- Cryptocurrency
+- Blockchain
+- Web3
+- Onramp
+- Swaps
+- DeFi
+- Agentic Workflows
+- Fintech
+apis:
+- aid: halliday:halliday-assets-api
+  name: Halliday Assets API
+  description: Asset information, discovery, and supported asset pairs
+  humanURL: https://docs.halliday.xyz
+  baseURL: https://v2.prod.halliday.xyz
+  tags:
+  - Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/halliday-assets-api-openapi.yml
+  - type: Documentation
+    url: https://docs.halliday.xyz
+  - type: APIReference
+    url: https://docs.halliday.xyz/pages/halliday-api-docs.md
+  - type: GettingStarted
+    url: https://docs.halliday.xyz/pages/api-quickstart.md
+- aid: halliday:halliday-chains-api
+  name: Halliday Chains API
+  description: Blockchain network information and configuration
+  humanURL: https://docs.halliday.xyz
+  baseURL: https://v2.prod.halliday.xyz
+  tags:
+  - Chains
+  properties:
+  - type: OpenAPI
+    url: openapi/halliday-chains-api-openapi.yml
+  - type: Documentation
+    url: https://docs.halliday.xyz
+  - type: APIReference
+    url: https://docs.halliday.xyz/pages/halliday-api-docs.md
+  - type: GettingStarted
+    url: https://docs.halliday.xyz/pages/api-quickstart.md
+- aid: halliday:halliday-payments-api
+  name: Halliday Payments API
+  description: Core payment operations including quotes, confirmation, and status tracking
+  humanURL: https://docs.halliday.xyz
+  baseURL: https://v2.prod.halliday.xyz
+  tags:
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/halliday-payments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.halliday.xyz
+  - type: APIReference
+    url: https://docs.halliday.xyz/pages/halliday-api-docs.md
+  - type: GettingStarted
+    url: https://docs.halliday.xyz/pages/api-quickstart.md
+- aid: halliday:halliday-webhooks-api
+  name: Halliday Webhooks API
+  description: >-
+    Register HTTPS endpoints to receive signed notifications when a workflow reaches a terminal
+
+    state, instead of polling for status. You subscribe to one or more event types per webhook.
+
+
+    | Event type | Fires when a workflow's status becomes |
+
+    | --- | --- |
+
+    | `WORKFLOW_COMPLETED` | `COMPLETE` |
+
+    | `WORKFLOW_FAILED` | `FAILED` |
+
+
+    All management endpoints live under `/orgs/webhooks` and authenticate with a secret API key
+
+    (passed as a bearer token) that has webhook access. Publishable keys cannot manage webhooks.
+
+
+    **Integration checklist**
+
+
+    - Receiver is a public HTTPS endpoint (no private IPs).
+
+    - Save the `signing_secret` when you create the webhook — it is shown only once.
+
+    - Verify `X-Halliday-Signature` against the raw body, accepting any of its comma-separated signatures.
+
+    - Respond `2xx` quickly and do the real work afterward.
+
+    - Skip deliveries whose `id` you have already handled.
+  humanURL: https://docs.halliday.xyz
+  baseURL: https://v2.prod.halliday.xyz
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/halliday-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.halliday.xyz
+  - type: APIReference
+    url: https://docs.halliday.xyz/pages/halliday-api-docs.md
+  - type: GettingStarted
+    url: https://docs.halliday.xyz/pages/api-quickstart.md
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+common:
+- type: OpenAPI
+  url: openapi/halliday-openapi-original.yml
+- type: DeveloperPortal
+  url: https://docs.halliday.xyz
+- type: Documentation
+  url: https://docs.halliday.xyz
+- type: APIReference
+  url: https://docs.halliday.xyz/pages/halliday-api-docs.md
+- type: GettingStarted
+  url: https://docs.halliday.xyz/pages/api-quickstart.md
+- type: Support
+  url: https://halliday.xyz/contact
+- type: Blog
+  url: https://blog.halliday.xyz
+- type: GitHubOrganization
+  url: https://github.com/HallidayInc
+- type: SignUp
+  url: https://dashboard.halliday.xyz/
+- type: TermsOfService
+  url: https://halliday.xyz/legal/terms-of-use
+- type: PrivacyPolicy
+  url: https://halliday.xyz/legal/privacy-policy
+- type: Sandbox
+  url: https://demo.halliday.xyz/
+- type: Compliance
+  url: https://docs.halliday.xyz/pages/compliance-security.md
+- type: Authentication
+  url: authentication/halliday-authentication.yml
+- type: AgenticAccess
+  url: agentic-access/halliday-agentic-access.yml
+- type: DomainSecurity
+  url: security/halliday-domain-security.yml
+- type: Packages
+  url: packages/halliday-packages.yml
+- type: SDKs
+  url: packages/halliday-packages.yml
+- type: MCPServer
+  url: mcp/halliday-mcp.yml
+- type: LLMsTxt
+  url: llms/halliday-llms.txt
+- type: Overlay
+  url: overlays/halliday-openapi-overlay.yaml
+- type: Conformance
+  url: conformance/halliday-conformance.yml
+- type: ErrorCatalog
+  url: errors/halliday-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/halliday-lifecycle.yml
+- type: Conventions
+  url: conventions/halliday-conventions.yml
+- type: Components
+  url: components/halliday-components.yml
+- type: DataModel
+  url: data-model/halliday-data-model.yml
+- type: Webhooks
+  url: asyncapi/halliday-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

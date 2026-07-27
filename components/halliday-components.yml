@@ -1,0 +1,24 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.halliday.xyz/pages/payments-sdk-docs.md
+components:
+- family: Payments Widget
+  name: Halliday Payments Widget
+  description: >
+    Drop-in embeddable payment surface that handles the full onramp / swap / deposit flow.
+    Opened programmatically via openHallidayPayments() from @halliday-sdk/payments.
+  loader:
+    npm: "@halliday-sdk/payments"
+    cdn: https://cdn.jsdelivr.net/npm/@halliday-sdk/payments@0.2.0/dist/paymentsWidget/index.umd.min.js
+  entrypoint: openHallidayPayments({ apiKey })
+  playground: https://demo.halliday.xyz/
+  frameworks:
+  - Vanilla JS / HTML
+  - React
+  - React Native (WebView)
+  wallet_integrations:
+  - Dynamic
+  - Privy
+  - Wagmi / Viem
+  - Rainbowkit
+  - Reown

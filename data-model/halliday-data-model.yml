@@ -1,0 +1,57 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/halliday-openapi-original.yml
+entities:
+- name: Chain
+  schema: ChainInfo
+  keyed_by: network / chain_id
+  description: Supported blockchain network with native currency and explorer config.
+- name: Asset
+  schema: AssetDetails
+  variants: [Token, Fiat]
+  description: A supported token or fiat currency, with symbol, decimals, and chain.
+- name: Quote
+  schema: QuoteResponse
+  keyed_by: payment_id / state_token
+  description: A priced route (onramp/swap/offramp) for a requested input/output pair, with fees and routing.
+- name: Payment
+  schema: PaymentStatus
+  keyed_by: payment_id
+  id_prefix: pay_
+  description: A confirmed payment executing through onramp/swap/offramp stages, funded via a One-Time Wallet.
+- name: Webhook
+  schema: Webhook
+  keyed_by: label
+  description: A registered HTTPS endpoint receiving signed workflow-status events.
+relationships:
+- from: Quote
+  to: Asset
+  type: has_many
+  via: route (input/output assets)
+- from: Quote
+  to: Chain
+  type: belongs_to
+  via: asset.chain
+- from: Payment
+  to: Quote
+  type: belongs_to
+  via: state_token
+- from: Payment
+  to: Asset
+  type: has_many
+  via: input/output amounts
+- from: Payment
+  to: DepositInfo
+  type: has_one
+  via: deposit_info (One-Time Wallet address)
+- from: Payment
+  to: Issue
+  type: has_many
+  via: errors[]
+- from: Webhook
+  to: Payment
+  type: references
+  via: WORKFLOW_COMPLETED / WORKFLOW_FAILED events
+id_prefixes:
+  payment: pay_
+  api_key: pk_

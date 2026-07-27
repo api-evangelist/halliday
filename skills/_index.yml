@@ -1,0 +1,18 @@
+generated: '2026-07-19'
+method: searched
+source: https://github.com/HallidayInc/HallidayClaudePlugin
+skills:
+- file: halliday-payments.md
+  name: Halliday Payments Integration
+  description: Provider-published Claude Code skill for integrating Halliday Payments — SDK widget setup, API integration, example cloning, and payment lookup/debug.
+  api: openapi/halliday-openapi-original.yml
+  operations:
+  - getChains
+  - getAssets
+  - getOutputAssets
+  - getInputAssets
+  - getPaymentQuotes
+  - confirmPayment
+  - getPaymentStatus
+  - getPaymentBalances
+  official: true

@@ -1,0 +1,63 @@
+generated: '2026-07-19'
+method: derived
+status: candidate
+source: openapi/halliday-openapi-original.yml
+note: >
+  No official hosted/remote MCP server was found for Halliday (they publish a Claude Code
+  plugin + skill, not an MCP server). This is a CANDIDATE tool list derived one-per-operation
+  from the Halliday API V2 OpenAPI, to seed a future MCP surface. Read operations are
+  agent-safe; write operations (confirm/withdraw) carry onchain consequence — gate per the
+  agentic-access profile.
+server:
+  name: halliday
+  transport: http
+  url: null
+tools:
+- name: get_chains
+  description: Get supported blockchain networks with explorer URLs.
+  source_operation: openapi/halliday-openapi-original.yml#getChains
+- name: get_assets
+  description: Get supported crypto/fiat asset details.
+  source_operation: openapi/halliday-openapi-original.yml#getAssets
+- name: get_available_inputs
+  description: List input assets that can produce a given output asset.
+  source_operation: openapi/halliday-openapi-original.yml#getInputAssets
+- name: get_available_outputs
+  description: List output assets reachable from a given input asset.
+  source_operation: openapi/halliday-openapi-original.yml#getOutputAssets
+- name: get_payment_quotes
+  description: Request quotes for onramps/swaps (fixed input or fixed output).
+  source_operation: openapi/halliday-openapi-original.yml#getPaymentQuotes
+- name: confirm_payment
+  description: Confirm a quoted payment and receive deposit instructions.
+  source_operation: openapi/halliday-openapi-original.yml#confirmPayment
+- name: get_payment_status
+  description: Get the current status of a payment by payment_id.
+  source_operation: openapi/halliday-openapi-original.yml#getPaymentStatus
+- name: get_payment_history
+  description: Retrieve paginated payment history by owner.
+  source_operation: openapi/halliday-openapi-original.yml#getPaymentHistory
+- name: get_payment_balances
+  description: Check One-Time Wallet balances for a payment.
+  source_operation: openapi/halliday-openapi-original.yml#getPaymentBalances
+- name: withdraw_payment
+  description: Request a withdrawal to return funds to owner or a requoted address.
+  source_operation: openapi/halliday-openapi-original.yml#withdrawPayment
+- name: confirm_withdraw_payment
+  description: Submit the signed withdrawal request to execute the return of funds.
+  source_operation: openapi/halliday-openapi-original.yml#withdrawPaymentConfirm
+- name: register_webhook
+  description: Register an HTTPS endpoint for signed workflow event notifications.
+  source_operation: openapi/halliday-openapi-original.yml#registerWebhook
+- name: list_webhooks
+  description: List webhooks registered for the org.
+  source_operation: openapi/halliday-openapi-original.yml#listWebhooks
+- name: update_webhook
+  description: Update a registered webhook's url or auth header.
+  source_operation: openapi/halliday-openapi-original.yml#updateWebhook
+- name: delete_webhook
+  description: Delete a registered webhook by label.
+  source_operation: openapi/halliday-openapi-original.yml#deleteWebhook
+- name: rotate_webhook_secret
+  description: Rotate a webhook's signing secret with overlap.
+  source_operation: openapi/halliday-openapi-original.yml#rotateWebhookSecret

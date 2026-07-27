@@ -1,0 +1,39 @@
+generated: '2026-07-19'
+method: searched
+source: https://www.npmjs.com/package/halliday-sdk
+packages:
+- language: javascript
+  registry: npm
+  name: halliday-sdk
+  url: https://www.npmjs.com/package/halliday-sdk
+  install: npm install halliday-sdk
+  official: true
+  notes: Core Halliday Payments JS/TS SDK (publisher erichalliday).
+- language: javascript
+  registry: npm
+  name: "@halliday-sdk/payments"
+  url: https://www.npmjs.com/package/@halliday-sdk/payments
+  install: npm install @halliday-sdk/payments
+  official: true
+  notes: Drop-in payments widget (openHallidayPayments). Also served via CDN at cdn.jsdelivr.net/npm/@halliday-sdk/payments.
+- language: javascript
+  registry: npm
+  name: "@halliday-sdk/accounts"
+  url: https://www.npmjs.com/package/@halliday-sdk/accounts
+  install: npm install @halliday-sdk/accounts
+  official: true
+  notes: Accounts SDK (publisher erichalliday).
+- language: csharp
+  registry: github
+  name: HallidayInc/UnitySDK
+  url: https://github.com/HallidayInc/UnitySDK
+  install: null
+  official: true
+  notes: Unity game-engine SDK (archived).
+- language: cpp
+  registry: github
+  name: HallidayInc/halliday-unreal-sdk
+  url: https://github.com/HallidayInc/halliday-unreal-sdk
+  install: null
+  official: true
+  notes: Unreal Engine integration SDK.

@@ -1,0 +1,51 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/halliday-openapi-original.yml
+format: custom
+envelope:
+  shape: '{ "errors": [ { "kind": "<issue-kind>", "message": "<human message>", ... } ] }'
+  note: >
+    Halliday returns a top-level `errors` array (ErrorResponse schema). Each item is an
+    Issue discriminated by `kind`. Not RFC 9457 problem+json.
+issue_kinds:
+- kind: amount
+  schema: AmountIssue
+  meaning: Requested amount is outside supported bounds or otherwise invalid.
+- kind: amount_downstream
+  schema: AmountDownstreamIssue
+  meaning: A downstream provider rejected the amount (limits/liquidity).
+- kind: funding
+  schema: FundingIssue
+  meaning: Problem funding the payment / deposit.
+- kind: owner
+  schema: OwnerIssue
+  meaning: Owner wallet / signature problem.
+- kind: geolocation
+  schema: GeolocationIssue
+  meaning: Requested route is not available in the user's geography.
+- kind: provider
+  schema: ProviderIssue
+  meaning: Onramp/swap provider error.
+- kind: payin_method
+  schema: PayinMethodIssue
+  meaning: Selected pay-in method (credit card / ACH) is unavailable or invalid.
+- kind: other
+  schema: OtherIssue
+  meaning: Generic/known error not covered by a specific kind.
+- kind: unknown
+  schema: UnknownIssue
+  meaning: Unclassified error.
+http_statuses:
+- status: 400
+  title: Bad request / validation error
+  note: Missing or invalid parameters (e.g. missing payment_id, invalid wallet address, unsupported tokens).
+- status: 401
+  title: Unauthorized
+  note: Missing or invalid API key.
+- status: 403
+  title: Forbidden
+  note: API key lacks permission (e.g. publishable keys cannot manage webhooks; insufficient scope for the resource).
+- status: 404
+  title: Not found
+  note: Payment / resource with the given id not found or expired.
+recovery_reference: https://docs.halliday.xyz/pages/api-error-recovery-withdrawal.md

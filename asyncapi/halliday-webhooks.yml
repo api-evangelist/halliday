@@ -1,0 +1,26 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.halliday.xyz/api-reference/webhooks/register-a-webhook.md
+type: Webhooks
+transport: HTTP POST to a subscriber-registered HTTPS url
+description: >
+  Halliday delivers a signed HTTP POST to your registered url when a workflow reaches a
+  terminal state. Respond with any 2xx within a 10-second timeout to acknowledge; anything
+  else (or a timeout) is treated as a failed delivery and retried.
+security:
+  signing: HMAC signatures carried as v1= values; multiple v1= signatures during a secret-rotation overlap.
+  signing_secret: Returned once on registration (never returned again); rotatable via rotate-secret.
+  optional_auth_header: Subscriber may set a custom auth_header (name/value) sent with each delivery.
+event_types:
+- name: WORKFLOW_COMPLETED
+  description: A payment workflow reached a successful terminal state.
+- name: WORKFLOW_FAILED
+  description: A payment workflow reached a failed terminal state.
+event_payload: workflow status changed (see workflowStatusChanged / PaymentStatus schema)
+management_operations:
+- registerWebhook   # POST /orgs/webhooks
+- listWebhooks      # GET /orgs/webhooks
+- updateWebhook     # PATCH/PUT /orgs/webhooks
+- deleteWebhook     # DELETE /orgs/webhooks
+- rotateWebhookSecret  # /orgs/webhooks/rotate-secret
+docs: https://docs.halliday.xyz/pages/webhooks.md
