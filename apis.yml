@@ -147,7 +147,7 @@ maintainers:
   email: info@apis.io
 common:
 - type: OpenAPI
-  url: openapi/halliday-openapi-original.yml
+  url: openapi/_original/halliday-openapi-original.yml
 - type: DeveloperPortal
   url: https://docs.halliday.xyz
 - type: Documentation
