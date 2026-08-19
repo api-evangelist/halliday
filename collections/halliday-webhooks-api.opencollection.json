@@ -1,0 +1,95 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Halliday API V2 Assets Webhooks API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List webhooks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://v2.prod.halliday.xyz/orgs/webhooks"
+          },
+          "docs": "List the webhooks registered for your org. The signing secret is never included in this response.\n"
+        },
+        {
+          "info": {
+            "name": "Register a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://v2.prod.halliday.xyz/orgs/webhooks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Register an HTTPS endpoint to receive signed event notifications when a workflow reaches a\nterminal state. Halliday delivers each event as an HTTP `POST` to your registered `url`, so the\nendpoint must accept `POST` requests. On success the response includes a `signing_secret` that\nis **only ever returned on creation and rotation** — store it immediately, because it cannot be\nretrieved again from the list endpoint.\n\nAuthenticate with a secret API key that has webhook access. Publishable keys cann"
+        },
+        {
+          "info": {
+            "name": "Update a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://v2.prod.halliday.xyz/orgs/webhooks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a registered webhook. `label` identifies which webhook to update and cannot be changed.\nThe editable fields are **`url`** and **`auth_header`** (pass `auth_header: null` to\nremove a previously set header). `event_types` is not updatable — to change which events a\nwebhook subscribes to, delete it and create a new one. To change the signing secret, use the\nrotate-secret endpoint. A successful update returns `200` with an empty body.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://v2.prod.halliday.xyz/orgs/webhooks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Delete a registered webhook, identified by its `label`.\n"
+        },
+        {
+          "info": {
+            "name": "Rotate the signing secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://v2.prod.halliday.xyz/orgs/webhooks/rotate-secret",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generate a new signing secret for a webhook. The new key is added immediately and signs\nalongside any existing keys, so deliveries carry multiple `v1=` signatures during the overlap\nand you can roll the secret in your verifier without downtime.\n\nThe previous keys are only phased out if you pass `retire_after` (floored to at least 24h from\nnow). **Omit `retire_after` and the previous secret stays active indefinitely** — both keep\nsigning. The response returns the webhook `id` and the new `signing"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

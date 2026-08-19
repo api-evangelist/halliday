@@ -1,0 +1,173 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Halliday API V2 Assets Payments API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get payment status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://v2.prod.halliday.xyz/payments",
+            "params": [
+              {
+                "name": "payment_id",
+                "value": "",
+                "type": "query",
+                "description": "Payment identifier to check"
+              }
+            ]
+          },
+          "docs": "Get the current status of a payment, including progress through onramp/swap/offramp stages.\n"
+        },
+        {
+          "info": {
+            "name": "Get payment history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://v2.prod.halliday.xyz/payments/history",
+            "params": [
+              {
+                "name": "owner_address",
+                "value": "",
+                "type": "query",
+                "description": "Owner address to filter payments by"
+              },
+              {
+                "name": "pagination_key",
+                "value": "",
+                "type": "query",
+                "description": "Pagination key from previous response to fetch next page"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "id_query",
+                "value": "",
+                "type": "query",
+                "description": "Filter payments by ID"
+              },
+              {
+                "name": "dest_address",
+                "value": "",
+                "type": "query",
+                "description": "Filter payments by destination address"
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query",
+                "description": "Filter payments by category"
+              },
+              {
+                "name": "label",
+                "value": "",
+                "type": "query",
+                "description": "Filter payments by label"
+              }
+            ]
+          },
+          "docs": "Retrieve a paginated list of payment statuses filtered by owner.\nReturns an array of payment status objects and a pagination key for fetching the next page.\n"
+        },
+        {
+          "info": {
+            "name": "Get payment quotes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://v2.prod.halliday.xyz/payments/quotes",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Request quotes for payments, supporting both fixed input and fixed output scenarios.\nReturns multiple quote options with pricing, fees, and routing information.\n\nThis endpoint can also be used to requote from an existing payment by providing a payment_id.\nWhen requoting, input amounts are automatically derived from\nthe payment's current state, but you can optionally override the output asset.\n"
+        },
+        {
+          "info": {
+            "name": "Confirm a payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://v2.prod.halliday.xyz/payments/confirm",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Confirm a previously quoted payment and receive deposit instructions.\nReturns information on how to fund the payment (widget URL, contract address, etc.).\n\nIf a payment output is >= $300 USD, the owner address will need to produce a EVM_OWNER\nsignature. The response will include a USER_VERIFY next_instruction instead of funding\ndetails. In this case, prompt the user to sign the verification payloads via signTypedData,\nthen submit a ContinueConfirmPaymentRequest to this same endpoint to complete "
+        },
+        {
+          "info": {
+            "name": "Return funds to owner or retry payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://v2.prod.halliday.xyz/payments/withdraw",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Request a withdrawal to return funds back to the owner or to a requoted processing address.\nThis endpoint should be used when a payment cannot be completed and funds need to be returned.\n"
+        },
+        {
+          "info": {
+            "name": "Confirm withdrawal request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://v2.prod.halliday.xyz/payments/withdraw/confirm",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit and execute the signed withdrawal request to return funds back to the owner or to a requoted processing address.\n"
+        },
+        {
+          "info": {
+            "name": "Get wallet balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://v2.prod.halliday.xyz/payments/balances",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve balances for the wallets associated with a payment. You can optionally supply additional\nwallet and token pairs to check alongside the payment's primary wallet.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,2140 @@
+{
+  "item": [
+    {
+      "id": "1fb5ff89-b666-40ce-afe2-44cac23bdcb4",
+      "name": "Payments",
+      "description": {
+        "content": "Core payment operations including quotes, confirmation, and status tracking",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "93d729a1-4488-452c-be65-a82c4c157ba7",
+          "name": "Get payment status",
+          "request": {
+            "name": "Get payment status",
+            "description": {
+              "content": "Get the current status of a payment, including progress through onramp/swap/offramp stages.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "payment_id",
+                  "value": "<string>",
+                  "description": "(Required) Payment identifier to check"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "67cc9c2e-63b1-4224-a3d2-70cb992cfce5",
+              "name": "Payment status retrieved successfully!",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payment_id\": \"string\",\n  \"org_id\": \"string\",\n  \"status\": \"UNCONFIRMED\",\n  \"funded\": true,\n  \"created_at\": \"2022-10-09T14:32:22.892Z\",\n  \"updated_at\": \"2021-09-25T03:08:02.827Z\",\n  \"initiate_fund_by\": \"1963-05-02T01:11:21.003Z\",\n  \"quoted\": {\n    \"fees\": {\n      \"total_fees\": \"string\",\n      \"conversion_fees\": \"string\",\n      \"network_fees\": \"string\",\n      \"business_fees\": \"string\",\n      \"currency_symbol\": \"USD\"\n    },\n    \"output_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"route\": [\n      {\n        \"type\": \"ONRAMP\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"poll\"\n          },\n          {\n            \"type\": \"bridge\"\n          }\n        ],\n        \"step_index\": 5527.890761555295\n      },\n      {\n        \"type\": \"USER_FUND\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"bridge\"\n          },\n          {\n            \"type\": \"onramp\"\n          }\n        ],\n        \"step_index\": 2071.444326016849\n      }\n    ],\n    \"onramp\": \"string\",\n    \"onramp_method\": \"CREDIT_CARD\"\n  },\n  \"fulfilled\": {\n    \"route\": [\n      {\n        \"status\": \"PENDING\",\n        \"type\": \"ONCHAIN_STEP\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"custom_call\"\n          },\n          {\n            \"type\": \"rev_share\"\n          }\n        ],\n        \"step_index\": 5963.076864949232,\n        \"transaction_hash\": \"string\"\n      },\n      {\n        \"status\": \"COMPLETE\",\n        \"type\": \"ONCHAIN_STEP\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"user_fund\"\n          },\n          {\n            \"type\": \"convert\"\n          }\n        ],\n        \"step_index\": 7514.5294864662355,\n        \"transaction_hash\": \"string\"\n      }\n    ],\n    \"output_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"fees\": {\n      \"total_fees\": \"string\",\n      \"conversion_fees\": \"string\",\n      \"network_fees\": \"string\",\n      \"business_fees\": \"string\",\n      \"currency_symbol\": \"USD\"\n    },\n    \"onramp\": \"string\",\n    \"onramp_method\": \"CREDIT_CARD\"\n  },\n  \"current_prices\": {\n    \"USD\": \"1.00\",\n    \"ethereum:0x\": \"4200\",\n    \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\": \"1.00\"\n  },\n  \"price_currency\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n  \"processing_addresses\": [\n    {\n      \"chain\": \"ethereum\",\n      \"address\": \"string\",\n      \"factory\": \"string\"\n    },\n    {\n      \"chain\": \"ethereum\",\n      \"address\": \"string\",\n      \"factory\": \"string\"\n    }\n  ],\n  \"owner_chain\": \"string\",\n  \"owner_address\": \"string\",\n  \"destination_address\": \"string\",\n  \"client_redirect_url\": \"string\",\n  \"declaration\": {},\n  \"completed_at\": \"1959-12-23T06:34:00.484Z\",\n  \"quote_request\": {\n    \"request\": {\n      \"kind\": \"FIXED_INPUT\",\n      \"fixed_input_amount\": {\n        \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"amount\": \"1\"\n      },\n      \"output_asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"dest_address\": \"string\",\n      \"custom_actions\": {\n        \"actions\": [\n          {\n            \"type\": \"CallImmediateAction\",\n            \"target\": \"string\",\n            \"value\": \"string\",\n            \"calldata\": \"string\"\n          },\n          {\n            \"type\": \"CallImmediateAction\",\n            \"target\": \"string\",\n            \"value\": \"string\",\n            \"calldata\": \"string\"\n          }\n        ],\n        \"user_estimated_gas\": \"string\"\n      }\n    },\n    \"price_currency\": \"USD\",\n    \"onramps\": [\n      \"moonpay\",\n      \"coinbase\"\n    ],\n    \"onramp_methods\": [\n      \"CREDIT_CARD\",\n      \"ACH\",\n      \"APPLE_PAY\"\n    ],\n    \"customer_ip_address\": \"string\",\n    \"customer_id\": \"string\",\n    \"parent_payment_id\": \"string\",\n    \"label\": \"string\",\n    \"features\": [\n      \"ORG_EDGES\",\n      \"BETA_EDGES\"\n    ],\n    \"rev_share_name\": \"string\",\n    \"allow_unsafe_transfer_out\": true,\n    \"show_all_issues\": true,\n    \"allow_unsafe_slippage\": true,\n    \"allow_exceed_max_input_limit\": false,\n    \"use_intent_refund\": false,\n    \"hops\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"customer_id\": \"string\",\n  \"label\": \"string\",\n  \"next_instruction\": {\n    \"type\": \"ONRAMP\",\n    \"payment_id\": \"string\",\n    \"funding_page_url\": \"http://BXJPsDkynwhPoZfHEVVILxDYYg.svGHcSH,mn0UlUfb4eXaT7C+Y3\",\n    \"deposit_info\": [\n      {\n        \"deposit_token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"deposit_amount\": \"4.8\",\n        \"deposit_address\": \"string\",\n        \"deposit_chain\": \"base\"\n      },\n      {\n        \"deposit_token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"deposit_amount\": \"4.8\",\n        \"deposit_address\": \"string\",\n        \"deposit_chain\": \"base\"\n      }\n    ]\n  },\n  \"issues\": [\n    {\n      \"kind\": \"amount\",\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"given\": \"string\",\n      \"limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      },\n      \"source\": \"string\",\n      \"message\": \"string\",\n      \"reason\": \"UNKNOWN\",\n      \"downstream_limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      }\n    },\n    {\n      \"kind\": \"amount\",\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"given\": \"string\",\n      \"limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      },\n      \"source\": \"string\",\n      \"message\": \"string\",\n      \"reason\": \"NO_VALID_AMOUNT\",\n      \"downstream_limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      }\n    }\n  ],\n  \"parent_payment_id\": \"71520b2b-edf0-6446-0ec9-acb3bc555168\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e64e2fb0-8a5a-4fd8-885e-601c88f9f4a3",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Missing required parameter: payment_id\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4db09391-d49e-490b-88ae-a0dd791784fb",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7627b3d9-e1b6-478a-a901-5de3d43b00c6",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"You do not have permission to view this payment\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8135ee10-8087-4a7a-8432-0c7be7fac31d",
+              "name": "Payment not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Payment with payment_id 'pay_abc123' not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2e38c25d-c9b4-4972-8431-9ea040369913",
+          "name": "Get payment history",
+          "request": {
+            "name": "Get payment history",
+            "description": {
+              "content": "Retrieve a paginated list of payment statuses filtered by owner.\nReturns an array of payment status objects and a pagination key for fetching the next page.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payments",
+                "history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "owner_address",
+                  "value": "<string>",
+                  "description": "Owner address to filter payments by"
+                },
+                {
+                  "disabled": false,
+                  "key": "pagination_key",
+                  "value": "<string>",
+                  "description": "Pagination key from previous response to fetch next page"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<number>",
+                  "description": "Maximum number of results to return"
+                },
+                {
+                  "disabled": false,
+                  "key": "id_query",
+                  "value": "<string>",
+                  "description": "Filter payments by ID"
+                },
+                {
+                  "disabled": false,
+                  "key": "dest_address",
+                  "value": "<string>",
+                  "description": "Filter payments by destination address"
+                },
+                {
+                  "disabled": false,
+                  "key": "category",
+                  "value": "NEW_OR_FUNDED",
+                  "description": "Filter payments by category"
+                },
+                {
+                  "disabled": false,
+                  "key": "label",
+                  "value": "<string>",
+                  "description": "Filter payments by label"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a4f2a3be-1913-46d0-958e-d739abbddadf",
+              "name": "Payment history retrieved successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "owner_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pagination_key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "id_query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dest_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "category",
+                      "value": "NEW_OR_FUNDED"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payment_statuses\": [\n    {\n      \"payment_id\": \"<string>\",\n      \"status\": \"COMPLETE\",\n      \"funded\": true,\n      \"created_at\": \"2025-11-12T20:15:30.000Z\",\n      \"updated_at\": \"2025-11-12T20:25:45.000Z\",\n      \"initiate_fund_by\": \"2025-11-12T21:15:30.000Z\",\n      \"completed_at\": \"2025-11-12T20:25:45.000Z\",\n      \"quoted\": {\n        \"output_amount\": {\n          \"asset\": \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\",\n          \"amount\": \"100.00\"\n        },\n        \"fees\": {\n          \"total_fees\": \"3.50\",\n          \"conversion_fees\": \"2.00\",\n          \"network_fees\": \"1.00\",\n          \"business_fees\": \"0.50\",\n          \"currency_symbol\": \"USD\"\n        },\n        \"onramp\": \"stripe\",\n        \"onramp_method\": \"credit_card\",\n        \"route\": [\n          {\n            \"type\": \"ONRAMP\",\n            \"net_effect\": {\n              \"consume\": [\n                {\n                  \"account\": \"USER\",\n                  \"resource\": {\n                    \"asset\": \"usd\",\n                    \"property\": \"BALANCE\"\n                  },\n                  \"amount\": {\n                    \"amount\": \"103.50\"\n                  }\n                }\n              ],\n              \"produce\": [\n                {\n                  \"account\": \"PROCESSING_ADDRESS\",\n                  \"resource\": {\n                    \"asset\": \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\",\n                    \"property\": \"BALANCE\"\n                  },\n                  \"amount\": {\n                    \"amount\": \"100.00\"\n                  }\n                }\n              ]\n            },\n            \"pieces_info\": [\n              {\n                \"type\": \"onramp\"\n              }\n            ],\n            \"step_index\": 0\n          }\n        ]\n      },\n      \"fulfilled\": {\n        \"output_amount\": {\n          \"asset\": \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\",\n          \"amount\": \"100.00\"\n        },\n        \"fees\": {\n          \"total_fees\": \"3.50\",\n          \"conversion_fees\": \"2.00\",\n          \"network_fees\": \"1.00\",\n          \"business_fees\": \"0.50\",\n          \"currency_symbol\": \"USD\"\n        },\n        \"onramp\": \"stripe\",\n        \"onramp_method\": \"credit_card\",\n        \"route\": [\n          {\n            \"status\": \"COMPLETE\",\n            \"type\": \"ONRAMP\",\n            \"net_effect\": {\n              \"consume\": [\n                {\n                  \"account\": \"USER\",\n                  \"resource\": {\n                    \"asset\": \"usd\",\n                    \"property\": \"BALANCE\"\n                  },\n                  \"amount\": {\n                    \"amount\": \"103.50\"\n                  }\n                }\n              ],\n              \"produce\": [\n                {\n                  \"account\": \"PROCESSING_ADDRESS\",\n                  \"resource\": {\n                    \"asset\": \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\",\n                    \"property\": \"BALANCE\"\n                  },\n                  \"amount\": {\n                    \"amount\": \"100.00\"\n                  }\n                }\n              ]\n            },\n            \"pieces_info\": [\n              {\n                \"type\": \"onramp\"\n              }\n            ],\n            \"step_index\": 0,\n            \"transaction_hash\": \"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\"\n          }\n        ]\n      },\n      \"current_prices\": {\n        \"USD\": \"1.00\",\n        \"ethereum:0x\": \"4200.00\",\n        \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\": \"1.00\"\n      },\n      \"price_currency\": \"USD\",\n      \"processing_addresses\": [\n        {\n          \"chain\": \"ethereum\",\n          \"address\": \"0xaddress...\"\n        }\n      ],\n      \"owner_address\": \"0xowner...\",\n      \"destination_address\": \"0xdest...\"\n    }\n  ],\n  \"next_pagination_key\": \"42ff9b02-037f-4a90-87fb-a4d2ca128565_2025-11-12T22:08:52.517Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f293745e-3b3a-41a9-9d6e-baafebdd3fb5",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "owner_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pagination_key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "id_query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dest_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "category",
+                      "value": "NEW_OR_FUNDED"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Missing required parameter: owner_address\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "45be1457-9830-443d-9b80-4cd711892e3e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "owner_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pagination_key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "id_query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dest_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "category",
+                      "value": "NEW_OR_FUNDED"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cec50d50-044e-4e9b-83d2-fb227f87b98a",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "owner_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pagination_key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "id_query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dest_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "category",
+                      "value": "NEW_OR_FUNDED"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"You do not have permission to access payment history for this address\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "850a8869-d1f0-445b-941d-e37fbbff3b2d",
+          "name": "Get payment quotes",
+          "request": {
+            "name": "Get payment quotes",
+            "description": {
+              "content": "Request quotes for payments, supporting both fixed input and fixed output scenarios.\nReturns multiple quote options with pricing, fees, and routing information.\n\nThis endpoint can also be used to requote from an existing payment by providing a payment_id.\nWhen requoting, input amounts are automatically derived from\nthe payment's current state, but you can optionally override the output asset.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payments",
+                "quotes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"request\": {\n    \"kind\": \"<string>\",\n    \"fixed_input_amount\": {\n      \"asset\": \"<string>\",\n      \"amount\": \"<string>\"\n    },\n    \"output_asset\": \"<string>\",\n    \"dest_address\": \"<string>\",\n    \"custom_actions\": {\n      \"actions\": [\n        {\n          \"type\": \"<string>\",\n          \"target\": \"<string>\",\n          \"value\": \"<string>\",\n          \"calldata\": \"<string>\"\n        },\n        {\n          \"type\": \"<string>\",\n          \"target\": \"<string>\",\n          \"value\": \"<string>\",\n          \"calldata\": \"<string>\"\n        }\n      ],\n      \"user_estimated_gas\": \"<string>\"\n    }\n  },\n  \"price_currency\": \"<string>\",\n  \"onramps\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"onramp_methods\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"customer_ip_address\": \"<string>\",\n  \"customer_id\": \"<string>\",\n  \"parent_payment_id\": \"<string>\",\n  \"label\": \"<string>\",\n  \"features\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"rev_share_name\": \"<string>\",\n  \"allow_unsafe_transfer_out\": \"<boolean>\",\n  \"show_all_issues\": \"<boolean>\",\n  \"allow_unsafe_slippage\": \"<boolean>\",\n  \"allow_exceed_max_input_limit\": \"<boolean>\",\n  \"use_intent_refund\": \"<boolean>\",\n  \"hops\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c0298a7a-07ca-45d8-bb01-fdbecdc44aca",
+              "name": "Successful quote response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "quotes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request\": {\n    \"kind\": \"FIXED_INPUT\",\n    \"fixed_input_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"output_asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n    \"dest_address\": \"string\",\n    \"custom_actions\": {\n      \"actions\": [\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        },\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        }\n      ],\n      \"user_estimated_gas\": \"string\"\n    }\n  },\n  \"price_currency\": \"USD\",\n  \"onramps\": [\n    \"moonpay\",\n    \"coinbase\"\n  ],\n  \"onramp_methods\": [\n    \"CREDIT_CARD\",\n    \"ACH\",\n    \"APPLE_PAY\"\n  ],\n  \"customer_ip_address\": \"<string>\",\n  \"customer_id\": \"<string>\",\n  \"parent_payment_id\": \"<string>\",\n  \"label\": \"<string>\",\n  \"features\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"rev_share_name\": \"<string>\",\n  \"allow_unsafe_transfer_out\": \"<boolean>\",\n  \"show_all_issues\": \"<boolean>\",\n  \"allow_unsafe_slippage\": \"<boolean>\",\n  \"allow_exceed_max_input_limit\": \"<boolean>\",\n  \"use_intent_refund\": \"<boolean>\",\n  \"hops\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"quote_request\": {\n    \"request\": {\n      \"kind\": \"FIXED_INPUT\",\n      \"fixed_input_amount\": {\n        \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"amount\": \"1\"\n      },\n      \"output_asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"dest_address\": \"string\",\n      \"custom_actions\": {\n        \"actions\": [\n          {\n            \"type\": \"CallImmediateAction\",\n            \"target\": \"string\",\n            \"value\": \"string\",\n            \"calldata\": \"string\"\n          },\n          {\n            \"type\": \"CallImmediateAction\",\n            \"target\": \"string\",\n            \"value\": \"string\",\n            \"calldata\": \"string\"\n          }\n        ],\n        \"user_estimated_gas\": \"string\"\n      }\n    },\n    \"price_currency\": \"USD\",\n    \"onramps\": [\n      \"moonpay\",\n      \"coinbase\"\n    ],\n    \"onramp_methods\": [\n      \"CREDIT_CARD\",\n      \"ACH\",\n      \"APPLE_PAY\"\n    ],\n    \"customer_ip_address\": \"string\",\n    \"customer_id\": \"string\",\n    \"parent_payment_id\": \"string\",\n    \"label\": \"string\",\n    \"features\": [\n      \"BETA_EDGES\",\n      \"BETA_EDGES\"\n    ],\n    \"rev_share_name\": \"string\",\n    \"allow_unsafe_transfer_out\": true,\n    \"show_all_issues\": false,\n    \"allow_unsafe_slippage\": true,\n    \"allow_exceed_max_input_limit\": false,\n    \"use_intent_refund\": true,\n    \"hops\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"quotes\": [\n    {\n      \"fees\": {\n        \"total_fees\": \"string\",\n        \"conversion_fees\": \"string\",\n        \"network_fees\": \"string\",\n        \"business_fees\": \"string\",\n        \"currency_symbol\": \"USD\"\n      },\n      \"output_amount\": {\n        \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"amount\": \"1\"\n      },\n      \"payment_id\": \"string\",\n      \"route\": [\n        {\n          \"type\": \"ONCHAIN_STEP\",\n          \"net_effect\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"pieces_info\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"step_index\": 1609.522790052571\n        },\n        {\n          \"type\": \"ONCHAIN_STEP\",\n          \"net_effect\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"pieces_info\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"step_index\": 8166.268662236235\n        }\n      ],\n      \"onramp\": \"string\",\n      \"onramp_method\": \"CREDIT_CARD\"\n    },\n    {\n      \"fees\": {\n        \"total_fees\": \"string\",\n        \"conversion_fees\": \"string\",\n        \"network_fees\": \"string\",\n        \"business_fees\": \"string\",\n        \"currency_symbol\": \"USD\"\n      },\n      \"output_amount\": {\n        \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"amount\": \"1\"\n      },\n      \"payment_id\": \"string\",\n      \"route\": [\n        {\n          \"type\": \"ONCHAIN_STEP\",\n          \"net_effect\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"pieces_info\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"step_index\": 9409.662233738507\n        },\n        {\n          \"type\": \"ONRAMP\",\n          \"net_effect\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"pieces_info\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"step_index\": 3408.8759289004834\n        }\n      ],\n      \"onramp\": \"string\",\n      \"onramp_method\": \"CREDIT_CARD\"\n    }\n  ],\n  \"current_prices\": {\n    \"USD\": \"1.00\",\n    \"ethereum:0x\": \"4200\",\n    \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\": \"1.00\"\n  },\n  \"price_currency\": \"USD\",\n  \"state_token\": \"string\",\n  \"quoted_at\": \"1977-02-27T12:27:06.407Z\",\n  \"accept_by\": \"1966-11-24T23:47:11.538Z\",\n  \"failures\": [\n    {\n      \"service_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"latency_seconds\": 9442.569283030323,\n      \"issues\": [\n        {\n          \"kind\": \"amount\",\n          \"asset\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"given\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"source\": \"string\",\n          \"message\": \"string\",\n          \"reason\": \"UNKNOWN\",\n          \"downstream_limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"kind\": \"amount\",\n          \"asset\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"given\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"source\": \"string\",\n          \"message\": \"string\",\n          \"reason\": \"UNKNOWN\",\n          \"downstream_limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ]\n    },\n    {\n      \"service_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"latency_seconds\": 9217.819316162238,\n      \"issues\": [\n        {\n          \"kind\": \"amount\",\n          \"asset\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"given\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"source\": \"string\",\n          \"message\": \"string\",\n          \"reason\": \"NO_VALID_AMOUNT\",\n          \"downstream_limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"kind\": \"amount\",\n          \"asset\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"given\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"source\": \"string\",\n          \"message\": \"string\",\n          \"reason\": \"TOO_LOW\",\n          \"downstream_limits\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ]\n    }\n  ],\n  \"limits\": [\n    {\n      \"min\": \"string\",\n      \"max\": \"string\"\n    },\n    {\n      \"min\": \"string\",\n      \"max\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "627ffb2c-3a13-41e1-847e-f926b75ef92b",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "quotes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request\": {\n    \"kind\": \"FIXED_INPUT\",\n    \"fixed_input_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"output_asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n    \"dest_address\": \"string\",\n    \"custom_actions\": {\n      \"actions\": [\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        },\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        }\n      ],\n      \"user_estimated_gas\": \"string\"\n    }\n  },\n  \"price_currency\": \"USD\",\n  \"onramps\": [\n    \"moonpay\",\n    \"coinbase\"\n  ],\n  \"onramp_methods\": [\n    \"CREDIT_CARD\",\n    \"ACH\",\n    \"APPLE_PAY\"\n  ],\n  \"customer_ip_address\": \"<string>\",\n  \"customer_id\": \"<string>\",\n  \"parent_payment_id\": \"<string>\",\n  \"label\": \"<string>\",\n  \"features\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"rev_share_name\": \"<string>\",\n  \"allow_unsafe_transfer_out\": \"<boolean>\",\n  \"show_all_issues\": \"<boolean>\",\n  \"allow_unsafe_slippage\": \"<boolean>\",\n  \"allow_exceed_max_input_limit\": \"<boolean>\",\n  \"use_intent_refund\": \"<boolean>\",\n  \"hops\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"amount\",\n      \"given\": \"5\",\n      \"limits\": {\n        \"min\": \"10\",\n        \"max\": \"10000\"\n      },\n      \"source\": \"moonpay\",\n      \"message\": \"Amount too low. Minimum amount is $10 USD\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "78afb01d-8a33-4813-af4f-c0dcde37f9b8",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "quotes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request\": {\n    \"kind\": \"FIXED_INPUT\",\n    \"fixed_input_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"output_asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n    \"dest_address\": \"string\",\n    \"custom_actions\": {\n      \"actions\": [\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        },\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        }\n      ],\n      \"user_estimated_gas\": \"string\"\n    }\n  },\n  \"price_currency\": \"USD\",\n  \"onramps\": [\n    \"moonpay\",\n    \"coinbase\"\n  ],\n  \"onramp_methods\": [\n    \"CREDIT_CARD\",\n    \"ACH\",\n    \"APPLE_PAY\"\n  ],\n  \"customer_ip_address\": \"<string>\",\n  \"customer_id\": \"<string>\",\n  \"parent_payment_id\": \"<string>\",\n  \"label\": \"<string>\",\n  \"features\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"rev_share_name\": \"<string>\",\n  \"allow_unsafe_transfer_out\": \"<boolean>\",\n  \"show_all_issues\": \"<boolean>\",\n  \"allow_unsafe_slippage\": \"<boolean>\",\n  \"allow_exceed_max_input_limit\": \"<boolean>\",\n  \"use_intent_refund\": \"<boolean>\",\n  \"hops\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"API key missing or invalid\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "62f9df25-a00d-48f2-b773-22beacdcfcea",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "quotes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request\": {\n    \"kind\": \"FIXED_INPUT\",\n    \"fixed_input_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"output_asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n    \"dest_address\": \"string\",\n    \"custom_actions\": {\n      \"actions\": [\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        },\n        {\n          \"type\": \"CallImmediateAction\",\n          \"target\": \"string\",\n          \"value\": \"string\",\n          \"calldata\": \"string\"\n        }\n      ],\n      \"user_estimated_gas\": \"string\"\n    }\n  },\n  \"price_currency\": \"USD\",\n  \"onramps\": [\n    \"moonpay\",\n    \"coinbase\"\n  ],\n  \"onramp_methods\": [\n    \"CREDIT_CARD\",\n    \"ACH\",\n    \"APPLE_PAY\"\n  ],\n  \"customer_ip_address\": \"<string>\",\n  \"customer_id\": \"<string>\",\n  \"parent_payment_id\": \"<string>\",\n  \"label\": \"<string>\",\n  \"features\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"rev_share_name\": \"<string>\",\n  \"allow_unsafe_transfer_out\": \"<boolean>\",\n  \"show_all_issues\": \"<boolean>\",\n  \"allow_unsafe_slippage\": \"<boolean>\",\n  \"allow_exceed_max_input_limit\": \"<boolean>\",\n  \"use_intent_refund\": \"<boolean>\",\n  \"hops\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Your API key does not have permission to create quotes\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "802f0890-3fb3-4ed8-a901-3eca18572c2e",
+          "name": "Confirm a payment",
+          "request": {
+            "name": "Confirm a payment",
+            "description": {
+              "content": "Confirm a previously quoted payment and receive deposit instructions.\nReturns information on how to fund the payment (widget URL, contract address, etc.).\n\nIf a payment output is >= $300 USD, the owner address will need to produce a EVM_OWNER\nsignature. The response will include a USER_VERIFY next_instruction instead of funding\ndetails. In this case, prompt the user to sign the verification payloads via signTypedData,\nthen submit a ContinueConfirmPaymentRequest to this same endpoint to complete confirmation.\nOnce an owner address has produced an EVM_OWNER signature, subsequent payments with that\nowner address will not require the signature again.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payments",
+                "confirm"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_id\": \"<string>\",\n  \"state_token\": \"<string>\",\n  \"owner_address\": \"<string>\",\n  \"destination_address\": \"<string>\",\n  \"client_redirect_url\": \"<uri>\",\n  \"owner_chain\": \"<string>\",\n  \"client_redirect_after\": \"COMPLETED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ae09409a-e460-4810-8f3a-369e5141a33a",
+              "name": "Payment confirmed successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"state_token\": \"<string>\",\n  \"owner_address\": \"<string>\",\n  \"destination_address\": \"<string>\",\n  \"client_redirect_url\": \"<uri>\",\n  \"owner_chain\": \"<string>\",\n  \"client_redirect_after\": \"COMPLETED\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payment_id\": \"string\",\n  \"org_id\": \"string\",\n  \"status\": \"UNCONFIRMED\",\n  \"funded\": true,\n  \"created_at\": \"2022-10-09T14:32:22.892Z\",\n  \"updated_at\": \"2021-09-25T03:08:02.827Z\",\n  \"initiate_fund_by\": \"1963-05-02T01:11:21.003Z\",\n  \"quoted\": {\n    \"fees\": {\n      \"total_fees\": \"string\",\n      \"conversion_fees\": \"string\",\n      \"network_fees\": \"string\",\n      \"business_fees\": \"string\",\n      \"currency_symbol\": \"USD\"\n    },\n    \"output_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"route\": [\n      {\n        \"type\": \"ONRAMP\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"poll\"\n          },\n          {\n            \"type\": \"bridge\"\n          }\n        ],\n        \"step_index\": 5527.890761555295\n      },\n      {\n        \"type\": \"USER_FUND\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"bridge\"\n          },\n          {\n            \"type\": \"onramp\"\n          }\n        ],\n        \"step_index\": 2071.444326016849\n      }\n    ],\n    \"onramp\": \"string\",\n    \"onramp_method\": \"CREDIT_CARD\"\n  },\n  \"fulfilled\": {\n    \"route\": [\n      {\n        \"status\": \"PENDING\",\n        \"type\": \"ONCHAIN_STEP\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"custom_call\"\n          },\n          {\n            \"type\": \"rev_share\"\n          }\n        ],\n        \"step_index\": 5963.076864949232,\n        \"transaction_hash\": \"string\"\n      },\n      {\n        \"status\": \"COMPLETE\",\n        \"type\": \"ONCHAIN_STEP\",\n        \"net_effect\": {\n          \"consume\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"produce\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"pieces_info\": [\n          {\n            \"type\": \"user_fund\"\n          },\n          {\n            \"type\": \"convert\"\n          }\n        ],\n        \"step_index\": 7514.5294864662355,\n        \"transaction_hash\": \"string\"\n      }\n    ],\n    \"output_amount\": {\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"1\"\n    },\n    \"fees\": {\n      \"total_fees\": \"string\",\n      \"conversion_fees\": \"string\",\n      \"network_fees\": \"string\",\n      \"business_fees\": \"string\",\n      \"currency_symbol\": \"USD\"\n    },\n    \"onramp\": \"string\",\n    \"onramp_method\": \"CREDIT_CARD\"\n  },\n  \"current_prices\": {\n    \"USD\": \"1.00\",\n    \"ethereum:0x\": \"4200\",\n    \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\": \"1.00\"\n  },\n  \"price_currency\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n  \"processing_addresses\": [\n    {\n      \"chain\": \"ethereum\",\n      \"address\": \"string\",\n      \"factory\": \"string\"\n    },\n    {\n      \"chain\": \"ethereum\",\n      \"address\": \"string\",\n      \"factory\": \"string\"\n    }\n  ],\n  \"owner_chain\": \"string\",\n  \"owner_address\": \"string\",\n  \"destination_address\": \"string\",\n  \"client_redirect_url\": \"string\",\n  \"declaration\": {},\n  \"completed_at\": \"1959-12-23T06:34:00.484Z\",\n  \"quote_request\": {\n    \"request\": {\n      \"kind\": \"FIXED_INPUT\",\n      \"fixed_input_amount\": {\n        \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"amount\": \"1\"\n      },\n      \"output_asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"dest_address\": \"string\",\n      \"custom_actions\": {\n        \"actions\": [\n          {\n            \"type\": \"CallImmediateAction\",\n            \"target\": \"string\",\n            \"value\": \"string\",\n            \"calldata\": \"string\"\n          },\n          {\n            \"type\": \"CallImmediateAction\",\n            \"target\": \"string\",\n            \"value\": \"string\",\n            \"calldata\": \"string\"\n          }\n        ],\n        \"user_estimated_gas\": \"string\"\n      }\n    },\n    \"price_currency\": \"USD\",\n    \"onramps\": [\n      \"moonpay\",\n      \"coinbase\"\n    ],\n    \"onramp_methods\": [\n      \"CREDIT_CARD\",\n      \"ACH\",\n      \"APPLE_PAY\"\n    ],\n    \"customer_ip_address\": \"string\",\n    \"customer_id\": \"string\",\n    \"parent_payment_id\": \"string\",\n    \"label\": \"string\",\n    \"features\": [\n      \"ORG_EDGES\",\n      \"BETA_EDGES\"\n    ],\n    \"rev_share_name\": \"string\",\n    \"allow_unsafe_transfer_out\": true,\n    \"show_all_issues\": true,\n    \"allow_unsafe_slippage\": true,\n    \"allow_exceed_max_input_limit\": false,\n    \"use_intent_refund\": false,\n    \"hops\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"customer_id\": \"string\",\n  \"label\": \"string\",\n  \"next_instruction\": {\n    \"type\": \"ONRAMP\",\n    \"payment_id\": \"string\",\n    \"funding_page_url\": \"http://BXJPsDkynwhPoZfHEVVILxDYYg.svGHcSH,mn0UlUfb4eXaT7C+Y3\",\n    \"deposit_info\": [\n      {\n        \"deposit_token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"deposit_amount\": \"4.8\",\n        \"deposit_address\": \"string\",\n        \"deposit_chain\": \"base\"\n      },\n      {\n        \"deposit_token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n        \"deposit_amount\": \"4.8\",\n        \"deposit_address\": \"string\",\n        \"deposit_chain\": \"base\"\n      }\n    ]\n  },\n  \"issues\": [\n    {\n      \"kind\": \"amount\",\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"given\": \"string\",\n      \"limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      },\n      \"source\": \"string\",\n      \"message\": \"string\",\n      \"reason\": \"UNKNOWN\",\n      \"downstream_limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      }\n    },\n    {\n      \"kind\": \"amount\",\n      \"asset\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"given\": \"string\",\n      \"limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      },\n      \"source\": \"string\",\n      \"message\": \"string\",\n      \"reason\": \"NO_VALID_AMOUNT\",\n      \"downstream_limits\": {\n        \"min\": \"string\",\n        \"max\": \"string\"\n      }\n    }\n  ],\n  \"parent_payment_id\": \"71520b2b-edf0-6446-0ec9-acb3bc555168\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1a3c02e9-d487-4e9e-9664-31ccfb2bce18",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"state_token\": \"<string>\",\n  \"owner_address\": \"<string>\",\n  \"destination_address\": \"<string>\",\n  \"client_redirect_url\": \"<uri>\",\n  \"owner_chain\": \"<string>\",\n  \"client_redirect_after\": \"COMPLETED\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid state_token. The quote may have expired.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "722eb01b-9e1a-45e2-a169-74c14fddfe5f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"state_token\": \"<string>\",\n  \"owner_address\": \"<string>\",\n  \"destination_address\": \"<string>\",\n  \"client_redirect_url\": \"<uri>\",\n  \"owner_chain\": \"<string>\",\n  \"client_redirect_after\": \"COMPLETED\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Authentication failed. Invalid API key.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a099de77-f5e6-4b48-980c-c37015cac004",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"state_token\": \"<string>\",\n  \"owner_address\": \"<string>\",\n  \"destination_address\": \"<string>\",\n  \"client_redirect_url\": \"<uri>\",\n  \"owner_chain\": \"<string>\",\n  \"client_redirect_after\": \"COMPLETED\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Access denied. This payment belongs to a different account.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "87912a57-bca9-48ab-b431-2fedf73732e9",
+              "name": "Payment not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"state_token\": \"<string>\",\n  \"owner_address\": \"<string>\",\n  \"destination_address\": \"<string>\",\n  \"client_redirect_url\": \"<uri>\",\n  \"owner_chain\": \"<string>\",\n  \"client_redirect_after\": \"COMPLETED\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Payment 'pay_xyz789' not found or has expired\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bb15be89-bbb7-4254-bc5a-74175d231a87",
+          "name": "Return funds to owner or retry payment",
+          "request": {
+            "name": "Return funds to owner or retry payment",
+            "description": {
+              "content": "Request a withdrawal to return funds back to the owner or to a requoted processing address.\nThis endpoint should be used when a payment cannot be completed and funds need to be returned.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payments",
+                "withdraw"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"<string>\",\n      \"amount\": \"<string>\"\n    },\n    {\n      \"token\": \"<string>\",\n      \"amount\": \"<string>\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"withdraw_account\": \"SPW\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "aa227d85-d0a0-480c-b7f9-726266ba9c54",
+              "name": "Withdrawal initiated successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"withdraw_account\": \"SPW\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"signature_type\": \"EIP712\",\n  \"payment_id\": \"string\",\n  \"withdraw_authorization\": \"string\",\n  \"state_token\": \"string\",\n  \"type\": 862\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "676e39f5-fb87-44ea-b819-906428aceb90",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"withdraw_account\": \"SPW\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Missing field 'token_amounts'.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d94dde4f-7fcc-489c-8213-d2d3a01ec789",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"withdraw_account\": \"SPW\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid or missing API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9fe06516-63c4-4530-a9ef-c5e0e98b0f8a",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"withdraw_account\": \"SPW\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"You are not authorized to withdraw funds from this payment\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c9c6d44d-ba65-443b-a390-30cbebece97c",
+              "name": "Payment not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"withdraw_account\": \"SPW\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Payment 'pay_def456' not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "44ea039c-c36b-49d5-9ea1-e5cc62b64238",
+          "name": "Confirm withdrawal request",
+          "request": {
+            "name": "Confirm withdrawal request",
+            "description": {
+              "content": "Submit and execute the signed withdrawal request to return funds back to the owner or to a requoted processing address.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payments",
+                "withdraw",
+                "confirm"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"<string>\",\n      \"amount\": \"<string>\"\n    },\n    {\n      \"token\": \"<string>\",\n      \"amount\": \"<string>\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"owner_signature\": \"<string>\",\n  \"withdraw_account\": \"SPW\",\n  \"payload\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "879304dd-95dd-494c-98dd-2d0593ea0eef",
+              "name": "Withdrawal executed successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"owner_signature\": \"<string>\",\n  \"withdraw_account\": \"SPW\",\n  \"payload\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payment_id\": \"string\",\n  \"transaction_hash\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a30f9148-6a35-4693-9d89-6179a756ca28",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"owner_signature\": \"<string>\",\n  \"withdraw_account\": \"SPW\",\n  \"payload\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid request body\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f268e16-1a71-446a-a72b-298304764c7b",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"owner_signature\": \"<string>\",\n  \"withdraw_account\": \"SPW\",\n  \"payload\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "721aa75b-1cc2-4eec-9775-c3d274d933a5",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "withdraw",
+                    "confirm"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"<string>\",\n  \"token_amounts\": [\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    },\n    {\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"amount\": \"string\"\n    }\n  ],\n  \"recipient_address\": \"<string>\",\n  \"owner_signature\": \"<string>\",\n  \"withdraw_account\": \"SPW\",\n  \"payload\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"You are not authorized to withdraw funds from this payment\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "78a50205-1576-4402-9915-e907e4d84971",
+          "name": "Get wallet balances",
+          "request": {
+            "name": "Get wallet balances",
+            "description": {
+              "content": "Retrieve balances for the wallets associated with a payment. You can optionally supply additional\nwallet and token pairs to check alongside the payment's primary wallet.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payments",
+                "balances"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_id\": \"<uuid>\",\n  \"custom_queries\": [\n    {\n      \"address\": \"<string>\",\n      \"token\": \"<string>\"\n    },\n    {\n      \"address\": \"<string>\",\n      \"token\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "acb79d2d-2dca-4f33-ab43-0121852922fe",
+              "name": "Wallet balances retrieved successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "balances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"pay_abc123\",\n  \"custom_queries\": [\n    {\n      \"address\": \"0xabc1234567890abcdef1234567890abcdef1234\",\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\"\n    },\n    {\n      \"address\": \"0xdef1234567890abcdef1234567890abcdef5678\",\n      \"token\": \"arbitrum:0xfffFFFFFfFFfffFFfFffffFffFFfFFfFFfFFf\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"balance_results\": [\n    {\n      \"address\": \"0xabc1234567890abcdef1234567890abcdef1234\",\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"account\": \"SPW\",\n      \"value\": {\n        \"kind\": \"amount\",\n        \"amount\": \"string\",\n        \"withdrawal_fee\": \"string\"\n      }\n    },\n    {\n      \"address\": \"0xabc1234567890abcdef1234567890abcdef1234\",\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\n      \"account\": \"INTENT\",\n      \"value\": {\n        \"kind\": \"amount\",\n        \"amount\": \"string\",\n        \"withdrawal_fee\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f43bef79-816d-4bcf-b60f-56caae2940bf",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "balances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"pay_abc123\",\n  \"custom_queries\": [\n    {\n      \"address\": \"0xabc1234567890abcdef1234567890abcdef1234\",\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\"\n    },\n    {\n      \"address\": \"0xdef1234567890abcdef1234567890abcdef5678\",\n      \"token\": \"arbitrum:0xfffFFFFFfFFfffFFfFffffFffFFfFFfFFfFFf\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid wallet address format\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4e009fd4-0236-4cbc-ae8f-a7f070d1fe14",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "balances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"pay_abc123\",\n  \"custom_queries\": [\n    {\n      \"address\": \"0xabc1234567890abcdef1234567890abcdef1234\",\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\"\n    },\n    {\n      \"address\": \"0xdef1234567890abcdef1234567890abcdef5678\",\n      \"token\": \"arbitrum:0xfffFFFFFfFFfffFFfFffffFffFFfFFfFFfFFf\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bfb071b0-398e-47a3-9aa0-c8ea992da1c8",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "balances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"pay_abc123\",\n  \"custom_queries\": [\n    {\n      \"address\": \"0xabc1234567890abcdef1234567890abcdef1234\",\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\"\n    },\n    {\n      \"address\": \"0xdef1234567890abcdef1234567890abcdef5678\",\n      \"token\": \"arbitrum:0xfffFFFFFfFFfffFFfFffffFffFFfFFfFFfFFf\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"You do not have permission to query payment balances\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bcffd54e-f4b5-4b34-b5db-b4d70af9d6f2",
+              "name": "Payment not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payments",
+                    "balances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payment_id\": \"pay_abc123\",\n  \"custom_queries\": [\n    {\n      \"address\": \"0xabc1234567890abcdef1234567890abcdef1234\",\n      \"token\": \"ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\"\n    },\n    {\n      \"address\": \"0xdef1234567890abcdef1234567890abcdef5678\",\n      \"token\": \"arbitrum:0xfffFFFFFfFFfffFFfFffffFffFFfFFfFFfFFf\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Payment 'pay_abc123' not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://v2.prod.halliday.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "06847416-685c-4cbb-a647-13e155466216",
+    "name": "Halliday API V2 Assets Payments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API V2 for Halliday's payment infrastructure, supporting onramps, swaps, and offramps.\n\nThis API provides a unified interface for cryptocurrency payments, allowing developers to:\n- Quote payments across multiple providers\n- Execute payments with onramps, swaps, and offramps\n- Track payment status and history\n\n## Authentication\n\nAPI key authentication is required for all endpoints.\n\n\nContact Support:\n Name: Contact Halliday\n Email: support@halliday.xyz",
+      "type": "text/plain"
+    }
+  }
+}

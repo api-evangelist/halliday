@@ -2,12 +2,12 @@ generated: '2026-07-19'
 method: derived
 status: candidate
 source: openapi/halliday-openapi-original.yml
-note: >
-  No official hosted/remote MCP server was found for Halliday (they publish a Claude Code
-  plugin + skill, not an MCP server). This is a CANDIDATE tool list derived one-per-operation
-  from the Halliday API V2 OpenAPI, to seed a future MCP surface. Read operations are
-  agent-safe; write operations (confirm/withdraw) carry onchain consequence — gate per the
-  agentic-access profile.
+note: 'No official hosted/remote MCP server was found for Halliday (they publish a Claude Code plugin
+  + skill, not an MCP server). This is a CANDIDATE tool list derived one-per-operation from the Halliday
+  API V2 OpenAPI, to seed a future MCP surface. Read operations are agent-safe; write operations (confirm/withdraw)
+  carry onchain consequence — gate per the agentic-access profile.
+
+  '
 server:
   name: halliday
   transport: http
@@ -61,3 +61,9 @@ tools:
 - name: rotate_webhook_secret
   description: Rotate a webhook's signing secret with overlap.
   source_operation: openapi/halliday-openapi-original.yml#rotateWebhookSecret
+deployment:
+  mode: none
+  verified: derived
+  tools: 16
+  checked: '2026-08-12'
+  source: catalog MCP census

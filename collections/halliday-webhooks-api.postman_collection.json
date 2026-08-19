@@ -1,0 +1,1138 @@
+{
+  "item": [
+    {
+      "id": "1549eaeb-bdb1-46dc-8296-b69a6c07580b",
+      "name": "Webhooks",
+      "description": {
+        "content": "Register HTTPS endpoints to receive signed notifications when a workflow reaches a terminal\nstate, instead of polling for status. You subscribe to one or more event types per webhook.\n\n| Event type | Fires when a workflow's status becomes |\n| --- | --- |\n| `WORKFLOW_COMPLETED` | `COMPLETE` |\n| `WORKFLOW_FAILED` | `FAILED` |\n\nAll management endpoints live under `/orgs/webhooks` and authenticate with a secret API key\n(passed as a bearer token) that has webhook access. Publishable keys cannot manage webhooks.\n\n**Integration checklist**\n\n- Receiver is a public HTTPS endpoint (no private IPs).\n- Save the `signing_secret` when you create the webhook — it is shown only once.\n- Verify `X-Halliday-Signature` against the raw body, accepting any of its comma-separated signatures.\n- Respond `2xx` quickly and do the real work afterward.\n- Skip deliveries whose `id` you have already handled.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "401490b8-3444-4505-83cd-1fbe78dbb073",
+          "name": "Register a webhook",
+          "request": {
+            "name": "Register a webhook",
+            "description": {
+              "content": "Register an HTTPS endpoint to receive signed event notifications when a workflow reaches a\nterminal state. Halliday delivers each event as an HTTP `POST` to your registered `url`, so the\nendpoint must accept `POST` requests. On success the response includes a `signing_secret` that\nis **only ever returned on creation and rotation** — store it immediately, because it cannot be\nretrieved again from the list endpoint.\n\nAuthenticate with a secret API key that has webhook access. Publishable keys cannot manage webhooks.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orgs",
+                "webhooks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"<uri>\",\n  \"label\": \"<string>\",\n  \"event_types\": [\n    \"<string>\"\n  ],\n  \"auth_header\": {\n    \"name\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  \"signing_secret\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c1de82df-2aee-4c52-9bcf-da56d98f3ffa",
+              "name": "Webhook registered successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://api.yourapp.com/halliday/webhooks\",\n  \"label\": \"prod-workflows\",\n  \"event_types\": [\n    \"WORKFLOW_COMPLETED\",\n    \"WORKFLOW_FAILED\"\n  ],\n  \"auth_header\": {\n    \"name\": \"X-Webhook-Token\",\n    \"value\": \"a-shared-secret-token\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"4f2c…\",\n  \"label\": \"prod-workflows\",\n  \"url\": \"https://api.yourapp.com/halliday/webhooks\",\n  \"signing_secret\": \"a1b2c3…\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8feb1af7-2970-4971-8fbb-24598d387d6f",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://api.yourapp.com/halliday/webhooks\",\n  \"label\": \"prod-workflows\",\n  \"event_types\": [\n    \"WORKFLOW_COMPLETED\",\n    \"WORKFLOW_FAILED\"\n  ],\n  \"auth_header\": {\n    \"name\": \"X-Webhook-Token\",\n    \"value\": \"a-shared-secret-token\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"invalid_type\",\n      \"expected\": \"string\",\n      \"path\": [\n        \"label\"\n      ],\n      \"message\": \"Invalid input: expected string, received undefined\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "347bb086-fd25-4239-89b3-349490522d47",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://api.yourapp.com/halliday/webhooks\",\n  \"label\": \"prod-workflows\",\n  \"event_types\": [\n    \"WORKFLOW_COMPLETED\",\n    \"WORKFLOW_FAILED\"\n  ],\n  \"auth_header\": {\n    \"name\": \"X-Webhook-Token\",\n    \"value\": \"a-shared-secret-token\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e6629d93-ea80-431d-853c-8eef573dc65c",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://api.yourapp.com/halliday/webhooks\",\n  \"label\": \"prod-workflows\",\n  \"event_types\": [\n    \"WORKFLOW_COMPLETED\",\n    \"WORKFLOW_FAILED\"\n  ],\n  \"auth_header\": {\n    \"name\": \"X-Webhook-Token\",\n    \"value\": \"a-shared-secret-token\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Publishable keys cannot manage webhooks\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "de6a4f46-9bde-41b2-b1e2-86246aeebc89",
+          "name": "List webhooks",
+          "request": {
+            "name": "List webhooks",
+            "description": {
+              "content": "List the webhooks registered for your org. The signing secret is never included in this response.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orgs",
+                "webhooks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "286ca5c1-bd6e-477d-86b7-6218f3bc42b6",
+              "name": "List of registered webhooks",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"webhooks\": [\n    {\n      \"id\": \"4f2c…\",\n      \"label\": \"prod-workflows\",\n      \"url\": \"https://api.yourapp.com/halliday/webhooks\",\n      \"event_types\": [\n        \"WORKFLOW_COMPLETED\",\n        \"WORKFLOW_FAILED\"\n      ],\n      \"auth_header_name\": null,\n      \"created_at\": \"2026-06-20T12:00:00.000Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84307f95-063e-45c4-9ddd-0e48cbe27271",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "23e3d2ef-6988-48e4-842e-92e20083bcfc",
+          "name": "Update a webhook",
+          "request": {
+            "name": "Update a webhook",
+            "description": {
+              "content": "Update a registered webhook. `label` identifies which webhook to update and cannot be changed.\nThe editable fields are **`url`** and **`auth_header`** (pass `auth_header: null` to\nremove a previously set header). `event_types` is not updatable — to change which events a\nwebhook subscribes to, delete it and create a new one. To change the signing secret, use the\nrotate-secret endpoint. A successful update returns `200` with an empty body.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orgs",
+                "webhooks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"<string>\",\n  \"url\": \"<uri>\",\n  \"auth_header\": {\n    \"name\": \"<string>\",\n    \"value\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "00d35fbb-df65-4690-8e58-8ac19b6cea22",
+              "name": "Webhook updated successfully (empty body)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"url\": \"https://api.yourapp.com/halliday/webhooks/v2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3f5af3ce-2916-44f1-8cb7-7c8ba6c36bdd",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"url\": \"https://api.yourapp.com/halliday/webhooks/v2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"invalid_type\",\n      \"expected\": \"string\",\n      \"path\": [\n        \"label\"\n      ],\n      \"message\": \"Invalid input: expected string, received undefined\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "568659d4-4394-4afa-a682-5baa48e92c94",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"url\": \"https://api.yourapp.com/halliday/webhooks/v2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c0d921f4-6d18-43e4-8c63-65515657689f",
+              "name": "Webhook not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"url\": \"https://api.yourapp.com/halliday/webhooks/v2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"No webhook with label 'prod-workflows' found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1afd210-07da-4dd4-8510-721b67ea150e",
+          "name": "Delete a webhook",
+          "request": {
+            "name": "Delete a webhook",
+            "description": {
+              "content": "Delete a registered webhook, identified by its `label`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orgs",
+                "webhooks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "58a8041f-2d02-4db9-b820-a4fdd7547e1d",
+              "name": "Webhook deleted successfully (empty body)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "08ad092a-8ca1-46be-8d03-3492f59c40ea",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3a10f03d-a562-41d2-9a8f-29697007b657",
+              "name": "Webhook not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"No webhook with label 'prod-workflows' found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1b90d483-4bc9-47f5-943a-7607e44cca7d",
+          "name": "Rotate the signing secret",
+          "request": {
+            "name": "Rotate the signing secret",
+            "description": {
+              "content": "Generate a new signing secret for a webhook. The new key is added immediately and signs\nalongside any existing keys, so deliveries carry multiple `v1=` signatures during the overlap\nand you can roll the secret in your verifier without downtime.\n\nThe previous keys are only phased out if you pass `retire_after` (floored to at least 24h from\nnow). **Omit `retire_after` and the previous secret stays active indefinitely** — both keep\nsigning. The response returns the webhook `id` and the new `signing_secret`; store it now, as\nit is not retrievable later.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orgs",
+                "webhooks",
+                "rotate-secret"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"<string>\",\n  \"retire_after\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2ac1f7a0-0a23-4ec9-be81-e056e64cb422",
+              "name": "New signing secret issued",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks",
+                    "rotate-secret"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"retire_after\": \"2026-07-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"4f2c…\",\n  \"signing_secret\": \"d4e5f6…\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aa6f0525-5a4b-4556-b129-8fde569468de",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks",
+                    "rotate-secret"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"retire_after\": \"2026-07-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"invalid_type\",\n      \"expected\": \"string\",\n      \"path\": [\n        \"label\"\n      ],\n      \"message\": \"Invalid input: expected string, received undefined\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f18d0bf1-65de-49df-96f4-cb685492ad96",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks",
+                    "rotate-secret"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"retire_after\": \"2026-07-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7421b0f3-9374-4019-94b4-a04bce1f60b4",
+              "name": "Webhook not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orgs",
+                    "webhooks",
+                    "rotate-secret"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"label\": \"prod-workflows\",\n  \"retire_after\": \"2026-07-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"No webhook with label 'prod-workflows' found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://v2.prod.halliday.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "e92d4efe-0769-40df-b89c-29f534626a6b",
+    "name": "Halliday API V2 Assets Webhooks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API V2 for Halliday's payment infrastructure, supporting onramps, swaps, and offramps.\n\nThis API provides a unified interface for cryptocurrency payments, allowing developers to:\n- Quote payments across multiple providers\n- Execute payments with onramps, swaps, and offramps\n- Track payment status and history\n\n## Authentication\n\nAPI key authentication is required for all endpoints.\n\n\nContact Support:\n Name: Contact Halliday\n Email: support@halliday.xyz",
+      "type": "text/plain"
+    }
+  }
+}

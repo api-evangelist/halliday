@@ -1,0 +1,1127 @@
+{
+  "item": [
+    {
+      "id": "22de7f8d-629b-450f-a60d-cd0e32016a05",
+      "name": "Assets",
+      "description": {
+        "content": "Asset information, discovery, and supported asset pairs",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b38750b2-bf18-4b86-aa89-73300d7c5d11",
+          "name": "Get asset details",
+          "request": {
+            "name": "Get asset details",
+            "description": {
+              "content": "Get detailed information about specific assets including metadata, symbols, and chain information.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "assets[]",
+                  "value": "<string>",
+                  "description": "List of assets to get details for"
+                },
+                {
+                  "disabled": false,
+                  "key": "assets[]",
+                  "value": "<string>",
+                  "description": "List of assets to get details for"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5e5f15bd-2312-4243-9aa9-f9b998f79572",
+              "name": "Asset details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"usd\": {\n    \"issuer\": \"USA\",\n    \"name\": \"United States Dollar\",\n    \"symbol\": \"USD\",\n    \"decimals\": 2\n  },\n  \"eur\": {\n    \"issuer\": \"ECB\",\n    \"name\": \"Euro\",\n    \"symbol\": \"EUR\",\n    \"decimals\": 2\n  },\n  \"ethereum:0x\": {\n    \"chain\": \"ethereum\",\n    \"address\": \"0x\",\n    \"name\": \"Ether\",\n    \"symbol\": \"ETH\",\n    \"decimals\": 18,\n    \"image_url\": \"https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1717ec1c-5fba-45ef-9aa1-37a9c1b2a048",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid asset format. Expected format: 'chain:address' for tokens or currency code for fiats\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec9bf4d2-0c2e-4316-89a0-a90fc92a65d1",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Missing or invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1e2f78c1-fe82-41e8-955e-912218a376f3",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "assets[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"API key does not have permission to access asset information\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "42198b38-15dc-4264-859e-e7c51dbb3bba",
+          "name": "Get available input assets for a given output asset",
+          "request": {
+            "name": "Get available input assets for a given output asset",
+            "description": {
+              "content": "Get a list of assets that can be used as inputs for the given output assets and providers.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                "available-inputs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "inputs[]",
+                  "value": "<string>",
+                  "description": "Filter by specific input assets"
+                },
+                {
+                  "disabled": false,
+                  "key": "inputs[]",
+                  "value": "<string>",
+                  "description": "Filter by specific input assets"
+                },
+                {
+                  "disabled": false,
+                  "key": "outputs[]",
+                  "value": "<string>",
+                  "description": "Output assets to find inputs for"
+                },
+                {
+                  "disabled": false,
+                  "key": "outputs[]",
+                  "value": "<string>",
+                  "description": "Output assets to find inputs for"
+                },
+                {
+                  "disabled": false,
+                  "key": "onramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific onramp providers"
+                },
+                {
+                  "disabled": false,
+                  "key": "onramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific onramp providers"
+                },
+                {
+                  "disabled": false,
+                  "key": "offramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific offramp providers"
+                },
+                {
+                  "disabled": false,
+                  "key": "offramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific offramp providers"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ace1a8de-17ab-41b6-9d63-8669b0b4a808",
+              "name": "Available input assets grouped by output",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-inputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\": {\n    \"fiats\": [\n      \"usd\"\n    ],\n    \"tokens\": []\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "165f3c57-1cfd-4835-a250-e72fc8a53a3f",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-inputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid provider specified. Provider 'invalid_provider' is not supported\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc9a12cf-1308-4cf3-9e09-35fa6e44ded1",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-inputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Authentication required. Please provide a valid API key.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6db42dcb-b072-470c-b5ec-b50a2e0c0b3c",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-inputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Access denied. Your API key does not have permission to query available assets.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "83515a5f-41b4-4551-95cd-0bd9c52dd281",
+          "name": "Get available output assets for a given input asset",
+          "request": {
+            "name": "Get available output assets for a given input asset",
+            "description": {
+              "content": "Get a list of assets that can be received as outputs for the given input assets and providers.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                "available-outputs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "inputs[]",
+                  "value": "<string>",
+                  "description": "Input assets to find outputs for"
+                },
+                {
+                  "disabled": false,
+                  "key": "inputs[]",
+                  "value": "<string>",
+                  "description": "Input assets to find outputs for"
+                },
+                {
+                  "disabled": false,
+                  "key": "outputs[]",
+                  "value": "<string>",
+                  "description": "Filter by specific output assets"
+                },
+                {
+                  "disabled": false,
+                  "key": "outputs[]",
+                  "value": "<string>",
+                  "description": "Filter by specific output assets"
+                },
+                {
+                  "disabled": false,
+                  "key": "onramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific onramp providers"
+                },
+                {
+                  "disabled": false,
+                  "key": "onramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific onramp providers"
+                },
+                {
+                  "disabled": false,
+                  "key": "offramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific offramp providers"
+                },
+                {
+                  "disabled": false,
+                  "key": "offramps[]",
+                  "value": "<string>",
+                  "description": "Filter by specific offramp providers"
+                },
+                {
+                  "disabled": false,
+                  "key": "features[]",
+                  "value": "<string>",
+                  "description": "Feature flags to enable additional asset edges"
+                },
+                {
+                  "disabled": false,
+                  "key": "features[]",
+                  "value": "<string>",
+                  "description": "Feature flags to enable additional asset edges"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bebcebb7-b600-48e7-b12a-f6f401d1b1b2",
+              "name": "Available output assets grouped by input",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-outputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"usd\": {\n    \"fiats\": [],\n    \"tokens\": [\n      \"arbitrum:0x\",\n      \"ethereum:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3a30b847-f292-49ec-9e51-74c910b8566d",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-outputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid input asset format. Asset 'invalid-format' does not match expected pattern.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "069351ad-4ba7-4364-b4d6-ead0d36afc98",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-outputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid or expired API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2671fcb2-ca27-4bc8-8463-55fb7a0afc78",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    "available-outputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "inputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "outputs[]",
+                      "value": "ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "onramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offramps[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "features[]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Your account does not have access to this endpoint\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://v2.prod.halliday.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4e2417ab-fb2d-4029-8b51-ecf557de53a6",
+    "name": "Halliday API V2 Assets API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API V2 for Halliday's payment infrastructure, supporting onramps, swaps, and offramps.\n\nThis API provides a unified interface for cryptocurrency payments, allowing developers to:\n- Quote payments across multiple providers\n- Execute payments with onramps, swaps, and offramps\n- Track payment status and history\n\n## Authentication\n\nAPI key authentication is required for all endpoints.\n\n\nContact Support:\n Name: Contact Halliday\n Email: support@halliday.xyz",
+      "type": "text/plain"
+    }
+  }
+}

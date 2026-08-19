@@ -1,0 +1,123 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Halliday API V2 Assets API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get asset details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://v2.prod.halliday.xyz/assets",
+            "params": [
+              {
+                "name": "assets[]",
+                "value": "",
+                "type": "query",
+                "description": "List of assets to get details for"
+              }
+            ]
+          },
+          "docs": "Get detailed information about specific assets including metadata, symbols, and chain information.\n"
+        },
+        {
+          "info": {
+            "name": "Get available input assets for a given output asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://v2.prod.halliday.xyz/assets/available-inputs",
+            "params": [
+              {
+                "name": "inputs[]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific input assets"
+              },
+              {
+                "name": "outputs[]",
+                "value": "",
+                "type": "query",
+                "description": "Output assets to find inputs for"
+              },
+              {
+                "name": "onramps[]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific onramp providers"
+              },
+              {
+                "name": "offramps[]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific offramp providers"
+              }
+            ]
+          },
+          "docs": "Get a list of assets that can be used as inputs for the given output assets and providers.\n"
+        },
+        {
+          "info": {
+            "name": "Get available output assets for a given input asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://v2.prod.halliday.xyz/assets/available-outputs",
+            "params": [
+              {
+                "name": "inputs[]",
+                "value": "",
+                "type": "query",
+                "description": "Input assets to find outputs for"
+              },
+              {
+                "name": "outputs[]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific output assets"
+              },
+              {
+                "name": "onramps[]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific onramp providers"
+              },
+              {
+                "name": "offramps[]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific offramp providers"
+              },
+              {
+                "name": "features[]",
+                "value": "",
+                "type": "query",
+                "description": "Feature flags to enable additional asset edges"
+              }
+            ]
+          },
+          "docs": "Get a list of assets that can be received as outputs for the given input assets and providers.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,205 @@
+{
+  "item": [
+    {
+      "id": "b49fa19a-4ec5-4866-bd2d-34155284919a",
+      "name": "Chains",
+      "description": {
+        "content": "Blockchain network information and configuration",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "eb941313-fd2b-4b5a-bdbe-b3a00dc08db3",
+          "name": "Get supported chains",
+          "request": {
+            "name": "Get supported chains",
+            "description": {
+              "content": "Get a list of all supported blockchain networks with their configuration details.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "chains"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cb58952f-51fb-4a17-ab50-e8aca5d42e4a",
+              "name": "List of supported chains",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chains"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ethereum\": {\n    \"chain_id\": {\n      \"\\\\#\": 1\n    },\n    \"network\": \"ethereum\",\n    \"native_currency\": {\n      \"name\": \"Ether\",\n      \"symbol\": \"ETH\",\n      \"decimals\": 18\n    },\n    \"is_testnet\": false,\n    \"explorer\": \"https://etherscan.io/\",\n    \"image\": \"<IMAGE_URL>...\",\n    \"rpc\": \"<RPC_URL>...\"\n  },\n  \"arbitrum\": {\n    \"chain_id\": {\n      \"\\\\#\": 42161\n    },\n    \"network\": \"arbitrum\",\n    \"native_currency\": {\n      \"name\": \"Ether\",\n      \"symbol\": \"ETH\",\n      \"decimals\": 18\n    },\n    \"is_testnet\": false,\n    \"explorer\": \"https://arbiscan.io/\",\n    \"image\": \"<IMAGE_URL>...\",\n    \"rpc\": \"<RPC_URL>...\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "42241c94-f9eb-43ef-a824-3efb884d749d",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chains"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Invalid API key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4fcbfa8a-8596-4b54-9c24-9e1a50b9c2a0",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chains"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"kind\": \"other\",\n      \"message\": \"Insufficient permissions to access this resource\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://v2.prod.halliday.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "aba78897-b603-43a9-845e-b218c6519c6a",
+    "name": "Halliday API V2 Assets Chains API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API V2 for Halliday's payment infrastructure, supporting onramps, swaps, and offramps.\n\nThis API provides a unified interface for cryptocurrency payments, allowing developers to:\n- Quote payments across multiple providers\n- Execute payments with onramps, swaps, and offramps\n- Track payment status and history\n\n## Authentication\n\nAPI key authentication is required for all endpoints.\n\n\nContact Support:\n Name: Contact Halliday\n Email: support@halliday.xyz",
+      "type": "text/plain"
+    }
+  }
+}
