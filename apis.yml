@@ -39,6 +39,17 @@ tags:
 - Cryptocurrency
 - Blockchain
 - Web3
+- On-Ramp
+- Swaps
+- DeFi
+- Agentic Workflows
+- Fintech
+tags_raw:
+- Company
+- Payments
+- Cryptocurrency
+- Blockchain
+- Web3
 - Onramp
 - Swaps
 - DeFi
@@ -130,6 +141,8 @@ apis:
   humanURL: https://docs.halliday.xyz
   baseURL: https://v2.prod.halliday.xyz
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
