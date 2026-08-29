@@ -1,10 +1,7 @@
 {
   "provider": "halliday",
   "sources": [
-    "halliday-assets-api-openapi.yml",
-    "halliday-chains-api-openapi.yml",
-    "halliday-payments-api-openapi.yml",
-    "halliday-webhooks-api-openapi.yml"
+    "_original/halliday-openapi-original.yml"
   ],
   "outputs": [
     "halliday-assets-api-openapi.yml",
@@ -15,6 +12,14 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "halliday-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0"
+  ],
+  "skipped": [
+    "halliday-assets-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "halliday-chains-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "halliday-payments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "halliday-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
