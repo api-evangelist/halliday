@@ -11,6 +11,18 @@ description: >-
   payments, balances, withdrawals, and signed workflow webhooks, authenticated with publishable
   API keys, alongside JS/React/React Native SDKs and a published Claude Code integration skill.
 url: https://raw.githubusercontent.com/api-evangelist/halliday/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
