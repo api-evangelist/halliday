@@ -16,9 +16,7 @@ info:
     ## Authentication
 
 
-    API key authentication is required for all endpoints.
-
-    '
+    API key authentication is required for all endpoints.'
   version: 2.0.0
   contact:
     name: Contact Halliday
@@ -36,9 +34,7 @@ paths:
   /chains:
     get:
       summary: Get supported chains
-      description: 'Get a list of all supported blockchain networks with their configuration details.
-
-        '
+      description: Get a list of all supported blockchain networks with their configuration details.
       operationId: getChains
       tags:
       - Chains
@@ -98,83 +94,21 @@ paths:
                   message: Insufficient permissions to access this resource
 components:
   schemas:
-    Limits:
-      type: object
-      properties:
-        min:
-          type: string
-          description: Minimum amount as a decimal string.
-        max:
-          type: string
-          description: Maximum amount as a decimal string.
-    AmountDownstreamIssue:
+    Amount:
+      type: string
+      description: A decimal amount string.
+    OtherIssue:
       type: object
       required:
       - kind
-      - asset
-      - given
-      - limits
-      - source
       - message
-      - reason
       properties:
         kind:
           type: string
           enum:
-          - amount-downstream
-        asset:
-          $ref: '#/components/schemas/Asset'
-        given:
-          $ref: '#/components/schemas/Amount'
-        limits:
-          $ref: '#/components/schemas/Limits'
-        downstream_limits:
-          $ref: '#/components/schemas/Limits'
-        source:
-          type: string
+          - other
         message:
           type: string
-        reason:
-          type: string
-          enum:
-          - TOO_LOW
-          - TOO_HIGH
-          - NO_VALID_AMOUNT
-          - UNKNOWN
-    AmountIssue:
-      type: object
-      required:
-      - kind
-      - asset
-      - given
-      - limits
-      - source
-      - message
-      - reason
-      properties:
-        kind:
-          type: string
-          enum:
-          - amount
-        asset:
-          $ref: '#/components/schemas/Asset'
-        given:
-          $ref: '#/components/schemas/Amount'
-        limits:
-          $ref: '#/components/schemas/Limits'
-        downstream_limits:
-          $ref: '#/components/schemas/Limits'
-        source:
-          type: string
-        message:
-          type: string
-        reason:
-          type: string
-          enum:
-          - TOO_LOW
-          - TOO_HIGH
-          - NO_VALID_AMOUNT
-          - UNKNOWN
     ProviderIssue:
       type: object
       required:
@@ -187,6 +121,19 @@ components:
           - provider
         message:
           type: string
+    Issue:
+      oneOf:
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
     ChainInfo:
       type: object
       required:
@@ -251,6 +198,82 @@ components:
           type: string
           format: uri
           description: RPC endpoint URL
+    AmountDownstreamIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount-downstream
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
+    UnknownIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - unknown
+        message:
+          type: string
+    FundingIssue:
+      type: object
+      required:
+      - kind
+      - token
+      - balance
+      properties:
+        kind:
+          type: string
+          enum:
+          - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
+          type: string
+          description: Current token balance at the funding address.
+    Asset:
+      type: string
+      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
     Token:
       type: string
       description: Token identifier in the format "chain:address"
@@ -268,16 +291,6 @@ components:
           - payin_method
         message:
           type: string
-    ErrorResponse:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Issue'
-      description: Error response for known errors
     OwnerIssue:
       type: object
       required:
@@ -296,66 +309,6 @@ components:
           enum:
           - change
           - verify
-    Amount:
-      type: string
-      description: A decimal amount string.
-    FundingIssue:
-      type: object
-      required:
-      - kind
-      - token
-      - balance
-      properties:
-        kind:
-          type: string
-          enum:
-          - funding
-        token:
-          $ref: '#/components/schemas/Token'
-        balance:
-          type: string
-          description: Current token balance at the funding address.
-    Issue:
-      oneOf:
-      - $ref: '#/components/schemas/AmountIssue'
-      - $ref: '#/components/schemas/AmountDownstreamIssue'
-      - $ref: '#/components/schemas/FundingIssue'
-      - $ref: '#/components/schemas/OwnerIssue'
-      - $ref: '#/components/schemas/GeolocationIssue'
-      - $ref: '#/components/schemas/ProviderIssue'
-      - $ref: '#/components/schemas/PayinMethodIssue'
-      - $ref: '#/components/schemas/OtherIssue'
-      - $ref: '#/components/schemas/UnknownIssue'
-      discriminator:
-        propertyName: kind
-    UnknownIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - unknown
-        message:
-          type: string
-    OtherIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - other
-        message:
-          type: string
-    Asset:
-      type: string
-      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
-      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
     GeolocationIssue:
       type: object
       required:
@@ -368,6 +321,49 @@ components:
           - geolocation
         message:
           type: string
+    AmountIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
+    Limits:
+      type: object
+      properties:
+        min:
+          type: string
+          description: Minimum amount as a decimal string.
+        max:
+          type: string
+          description: Maximum amount as a decimal string.
   securitySchemes:
     ApiKeyAuth:
       type: http
