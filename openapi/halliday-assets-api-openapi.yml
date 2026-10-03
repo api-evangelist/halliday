@@ -331,11 +331,29 @@ paths:
                   message: Your account does not have access to this endpoint
 components:
   schemas:
-    Token:
-      type: string
-      description: Token identifier in the format "chain:address"
-      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
-      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    Issue:
+      oneOf:
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
     ProviderIssue:
       type: object
       required:
@@ -348,6 +366,58 @@ components:
           - provider
         message:
           type: string
+    OwnerIssue:
+      type: object
+      required:
+      - kind
+      - message
+      - mitigation
+      properties:
+        kind:
+          type: string
+          enum:
+          - owner
+        message:
+          type: string
+        mitigation:
+          type: string
+          enum:
+          - change
+          - verify
+    AmountDownstreamIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount-downstream
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
     FundingIssue:
       type: object
       required:
@@ -364,31 +434,10 @@ components:
         balance:
           type: string
           description: Current token balance at the funding address.
-    Limits:
-      type: object
-      properties:
-        min:
-          type: string
-          description: Minimum amount as a decimal string.
-        max:
-          type: string
-          description: Maximum amount as a decimal string.
     Fiat:
       type: string
       description: Fiat currency code
       example: USD
-    PayinMethodIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - payin_method
-        message:
-          type: string
     TokenDetails:
       type: object
       required:
@@ -440,65 +489,11 @@ components:
         coingecko_id:
           type: string
           description: CoinGecko identifier for the token
-    FiatDetails:
-      type: object
-      required:
-      - issuer
-      - name
-      - symbol
-      - decimals
-      properties:
-        issuer:
-          type: string
-          description: Issuer of the fiat
-          example: USA
-        name:
-          type: string
-          description: Full currency name
-          example: US Dollar
-        symbol:
-          type: string
-          description: Currency symbol
-          example: USD
-        decimals:
-          type: number
-          minimum: 0
-          maximum: 18
-          description: Number of decimal places
-          example: 2
-        alias:
-          type: string
-          description: Alternative symbol or alias
-        image_url:
-          type: string
-          format: uri
-          description: Currency icon URL
-    ErrorResponse:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Issue'
-      description: Error response for known errors
-    Amount:
+    Token:
       type: string
-      description: A decimal amount string.
-    Issue:
-      oneOf:
-      - $ref: '#/components/schemas/AmountIssue'
-      - $ref: '#/components/schemas/AmountDownstreamIssue'
-      - $ref: '#/components/schemas/FundingIssue'
-      - $ref: '#/components/schemas/OwnerIssue'
-      - $ref: '#/components/schemas/GeolocationIssue'
-      - $ref: '#/components/schemas/ProviderIssue'
-      - $ref: '#/components/schemas/PayinMethodIssue'
-      - $ref: '#/components/schemas/OtherIssue'
-      - $ref: '#/components/schemas/UnknownIssue'
-      discriminator:
-        propertyName: kind
+      description: Token identifier in the format "chain:address"
+      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
     AmountIssue:
       type: object
       required:
@@ -533,90 +528,10 @@ components:
           - TOO_HIGH
           - NO_VALID_AMOUNT
           - UNKNOWN
-    AssetDetails:
-      oneOf:
-      - $ref: '#/components/schemas/FiatDetails'
-      - $ref: '#/components/schemas/TokenDetails'
-    OwnerIssue:
-      type: object
-      required:
-      - kind
-      - message
-      - mitigation
-      properties:
-        kind:
-          type: string
-          enum:
-          - owner
-        message:
-          type: string
-        mitigation:
-          type: string
-          enum:
-          - change
-          - verify
     Asset:
       type: string
       description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
       example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
-    OtherIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - other
-        message:
-          type: string
-    AmountDownstreamIssue:
-      type: object
-      required:
-      - kind
-      - asset
-      - given
-      - limits
-      - source
-      - message
-      - reason
-      properties:
-        kind:
-          type: string
-          enum:
-          - amount-downstream
-        asset:
-          $ref: '#/components/schemas/Asset'
-        given:
-          $ref: '#/components/schemas/Amount'
-        limits:
-          $ref: '#/components/schemas/Limits'
-        downstream_limits:
-          $ref: '#/components/schemas/Limits'
-        source:
-          type: string
-        message:
-          type: string
-        reason:
-          type: string
-          enum:
-          - TOO_LOW
-          - TOO_HIGH
-          - NO_VALID_AMOUNT
-          - UNKNOWN
-    UnknownIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - unknown
-        message:
-          type: string
     GeolocationIssue:
       type: object
       required:
@@ -629,6 +544,91 @@ components:
           - geolocation
         message:
           type: string
+    OtherIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - other
+        message:
+          type: string
+    AssetDetails:
+      oneOf:
+      - $ref: '#/components/schemas/FiatDetails'
+      - $ref: '#/components/schemas/TokenDetails'
+    Limits:
+      type: object
+      properties:
+        min:
+          type: string
+          description: Minimum amount as a decimal string.
+        max:
+          type: string
+          description: Maximum amount as a decimal string.
+    FiatDetails:
+      type: object
+      required:
+      - issuer
+      - name
+      - symbol
+      - decimals
+      properties:
+        issuer:
+          type: string
+          description: Issuer of the fiat
+          example: USA
+        name:
+          type: string
+          description: Full currency name
+          example: US Dollar
+        symbol:
+          type: string
+          description: Currency symbol
+          example: USD
+        decimals:
+          type: number
+          minimum: 0
+          maximum: 18
+          description: Number of decimal places
+          example: 2
+        alias:
+          type: string
+          description: Alternative symbol or alias
+        image_url:
+          type: string
+          format: uri
+          description: Currency icon URL
+    UnknownIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - unknown
+        message:
+          type: string
+    PayinMethodIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - payin_method
+        message:
+          type: string
+    Amount:
+      type: string
+      description: A decimal amount string.
   securitySchemes:
     ApiKeyAuth:
       type: http

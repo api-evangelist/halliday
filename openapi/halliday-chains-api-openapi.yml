@@ -94,7 +94,7 @@ paths:
                   message: Insufficient permissions to access this resource
 components:
   schemas:
-    PayinMethodIssue:
+    OtherIssue:
       type: object
       required:
       - kind
@@ -103,9 +103,38 @@ components:
         kind:
           type: string
           enum:
-          - payin_method
+          - other
         message:
           type: string
+    FundingIssue:
+      type: object
+      required:
+      - kind
+      - token
+      - balance
+      properties:
+        kind:
+          type: string
+          enum:
+          - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
+          type: string
+          description: Current token balance at the funding address.
+    Issue:
+      oneOf:
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
     ChainInfo:
       type: object
       required:
@@ -170,33 +199,6 @@ components:
           type: string
           format: uri
           description: RPC endpoint URL
-    OwnerIssue:
-      type: object
-      required:
-      - kind
-      - message
-      - mitigation
-      properties:
-        kind:
-          type: string
-          enum:
-          - owner
-        message:
-          type: string
-        mitigation:
-          type: string
-          enum:
-          - change
-          - verify
-    Asset:
-      type: string
-      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
-      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
-    Token:
-      type: string
-      description: Token identifier in the format "chain:address"
-      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
-      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
     ErrorResponse:
       type: object
       required:
@@ -219,37 +221,6 @@ components:
           - provider
         message:
           type: string
-    Amount:
-      type: string
-      description: A decimal amount string.
-    FundingIssue:
-      type: object
-      required:
-      - kind
-      - token
-      - balance
-      properties:
-        kind:
-          type: string
-          enum:
-          - funding
-        token:
-          $ref: '#/components/schemas/Token'
-        balance:
-          type: string
-          description: Current token balance at the funding address.
-    OtherIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - other
-        message:
-          type: string
     Limits:
       type: object
       properties:
@@ -259,19 +230,53 @@ components:
         max:
           type: string
           description: Maximum amount as a decimal string.
-    Issue:
-      oneOf:
-      - $ref: '#/components/schemas/AmountIssue'
-      - $ref: '#/components/schemas/AmountDownstreamIssue'
-      - $ref: '#/components/schemas/FundingIssue'
-      - $ref: '#/components/schemas/OwnerIssue'
-      - $ref: '#/components/schemas/GeolocationIssue'
-      - $ref: '#/components/schemas/ProviderIssue'
-      - $ref: '#/components/schemas/PayinMethodIssue'
-      - $ref: '#/components/schemas/OtherIssue'
-      - $ref: '#/components/schemas/UnknownIssue'
-      discriminator:
-        propertyName: kind
+    PayinMethodIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - payin_method
+        message:
+          type: string
+    UnknownIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - unknown
+        message:
+          type: string
+    Token:
+      type: string
+      description: Token identifier in the format "chain:address"
+      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    OwnerIssue:
+      type: object
+      required:
+      - kind
+      - message
+      - mitigation
+      properties:
+        kind:
+          type: string
+          enum:
+          - owner
+        message:
+          type: string
+        mitigation:
+          type: string
+          enum:
+          - change
+          - verify
     AmountIssue:
       type: object
       required:
@@ -306,6 +311,25 @@ components:
           - TOO_HIGH
           - NO_VALID_AMOUNT
           - UNKNOWN
+    Asset:
+      type: string
+      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    GeolocationIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - geolocation
+        message:
+          type: string
+    Amount:
+      type: string
+      description: A decimal amount string.
     AmountDownstreamIssue:
       type: object
       required:
@@ -340,30 +364,6 @@ components:
           - TOO_HIGH
           - NO_VALID_AMOUNT
           - UNKNOWN
-    UnknownIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - unknown
-        message:
-          type: string
-    GeolocationIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - geolocation
-        message:
-          type: string
   securitySchemes:
     ApiKeyAuth:
       type: http
