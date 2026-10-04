@@ -331,59 +331,22 @@ paths:
                   message: Your account does not have access to this endpoint
 components:
   schemas:
-    Issue:
-      oneOf:
-      - $ref: '#/components/schemas/AmountIssue'
-      - $ref: '#/components/schemas/AmountDownstreamIssue'
-      - $ref: '#/components/schemas/FundingIssue'
-      - $ref: '#/components/schemas/OwnerIssue'
-      - $ref: '#/components/schemas/GeolocationIssue'
-      - $ref: '#/components/schemas/ProviderIssue'
-      - $ref: '#/components/schemas/PayinMethodIssue'
-      - $ref: '#/components/schemas/OtherIssue'
-      - $ref: '#/components/schemas/UnknownIssue'
-      discriminator:
-        propertyName: kind
-    ErrorResponse:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Issue'
-      description: Error response for known errors
-    ProviderIssue:
+    FundingIssue:
       type: object
       required:
       - kind
-      - message
+      - token
+      - balance
       properties:
         kind:
           type: string
           enum:
-          - provider
-        message:
+          - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
           type: string
-    OwnerIssue:
-      type: object
-      required:
-      - kind
-      - message
-      - mitigation
-      properties:
-        kind:
-          type: string
-          enum:
-          - owner
-        message:
-          type: string
-        mitigation:
-          type: string
-          enum:
-          - change
-          - verify
+          description: Current token balance at the funding address.
     AmountDownstreamIssue:
       type: object
       required:
@@ -418,26 +381,91 @@ components:
           - TOO_HIGH
           - NO_VALID_AMOUNT
           - UNKNOWN
-    FundingIssue:
+    Asset:
+      type: string
+      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    GeolocationIssue:
       type: object
       required:
       - kind
-      - token
-      - balance
+      - message
       properties:
         kind:
           type: string
           enum:
-          - funding
-        token:
-          $ref: '#/components/schemas/Token'
-        balance:
+          - geolocation
+        message:
           type: string
-          description: Current token balance at the funding address.
+    AssetDetails:
+      oneOf:
+      - $ref: '#/components/schemas/FiatDetails'
+      - $ref: '#/components/schemas/TokenDetails'
+    UnknownIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - unknown
+        message:
+          type: string
+    OtherIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - other
+        message:
+          type: string
+    AmountIssue:
+      type: object
+      required:
+      - kind
+      - asset
+      - given
+      - limits
+      - source
+      - message
+      - reason
+      properties:
+        kind:
+          type: string
+          enum:
+          - amount
+        asset:
+          $ref: '#/components/schemas/Asset'
+        given:
+          $ref: '#/components/schemas/Amount'
+        limits:
+          $ref: '#/components/schemas/Limits'
+        downstream_limits:
+          $ref: '#/components/schemas/Limits'
+        source:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+          - TOO_LOW
+          - TOO_HIGH
+          - NO_VALID_AMOUNT
+          - UNKNOWN
     Fiat:
       type: string
       description: Fiat currency code
       example: USD
+    Amount:
+      type: string
+      description: A decimal amount string.
     TokenDetails:
       type: object
       required:
@@ -489,77 +517,48 @@ components:
         coingecko_id:
           type: string
           description: CoinGecko identifier for the token
+    PayinMethodIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - payin_method
+        message:
+          type: string
+    ProviderIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - provider
+        message:
+          type: string
     Token:
       type: string
       description: Token identifier in the format "chain:address"
       pattern: ^[a-z]+:0x[a-fA-F0-9]+$
       example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
-    AmountIssue:
-      type: object
-      required:
-      - kind
-      - asset
-      - given
-      - limits
-      - source
-      - message
-      - reason
-      properties:
-        kind:
-          type: string
-          enum:
-          - amount
-        asset:
-          $ref: '#/components/schemas/Asset'
-        given:
-          $ref: '#/components/schemas/Amount'
-        limits:
-          $ref: '#/components/schemas/Limits'
-        downstream_limits:
-          $ref: '#/components/schemas/Limits'
-        source:
-          type: string
-        message:
-          type: string
-        reason:
-          type: string
-          enum:
-          - TOO_LOW
-          - TOO_HIGH
-          - NO_VALID_AMOUNT
-          - UNKNOWN
-    Asset:
-      type: string
-      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
-      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
-    GeolocationIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - geolocation
-        message:
-          type: string
-    OtherIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - other
-        message:
-          type: string
-    AssetDetails:
+    Issue:
       oneOf:
-      - $ref: '#/components/schemas/FiatDetails'
-      - $ref: '#/components/schemas/TokenDetails'
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
     Limits:
       type: object
       properties:
@@ -602,33 +601,34 @@ components:
           type: string
           format: uri
           description: Currency icon URL
-    UnknownIssue:
+    OwnerIssue:
       type: object
       required:
       - kind
       - message
+      - mitigation
       properties:
         kind:
           type: string
           enum:
-          - unknown
+          - owner
         message:
           type: string
-    PayinMethodIssue:
+        mitigation:
+          type: string
+          enum:
+          - change
+          - verify
+    ErrorResponse:
       type: object
       required:
-      - kind
-      - message
+      - errors
       properties:
-        kind:
-          type: string
-          enum:
-          - payin_method
-        message:
-          type: string
-    Amount:
-      type: string
-      description: A decimal amount string.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
   securitySchemes:
     ApiKeyAuth:
       type: http

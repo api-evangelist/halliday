@@ -425,119 +425,45 @@ webhooks:
             '
 components:
   schemas:
-    Issue:
-      oneOf:
-      - $ref: '#/components/schemas/AmountIssue'
-      - $ref: '#/components/schemas/AmountDownstreamIssue'
-      - $ref: '#/components/schemas/FundingIssue'
-      - $ref: '#/components/schemas/OwnerIssue'
-      - $ref: '#/components/schemas/GeolocationIssue'
-      - $ref: '#/components/schemas/ProviderIssue'
-      - $ref: '#/components/schemas/PayinMethodIssue'
-      - $ref: '#/components/schemas/OtherIssue'
-      - $ref: '#/components/schemas/UnknownIssue'
-      discriminator:
-        propertyName: kind
-    Webhook:
-      type: object
-      description: 'A registered webhook including its signing secret. Returned only on creation and rotation.
-
-        '
-      required:
-      - id
-      - label
-      - url
-      - signing_secret
-      properties:
-        id:
-          type: string
-          example: 4f2c…
-        label:
-          type: string
-          example: prod-workflows
-        url:
-          type: string
-          format: uri
-          example: https://api.yourapp.com/halliday/webhooks
-        signing_secret:
-          type: string
-          description: 'HMAC-SHA256 signing secret. Store it now — it is never returned again from the list endpoint.
-
-            '
-          example: a1b2c3…
-    ErrorResponse:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Issue'
-      description: Error response for known errors
-    ProviderIssue:
+    FundingIssue:
       type: object
       required:
       - kind
-      - message
+      - token
+      - balance
       properties:
         kind:
           type: string
           enum:
-          - provider
-        message:
+          - funding
+        token:
+          $ref: '#/components/schemas/Token'
+        balance:
           type: string
-    OwnerIssue:
+          description: Current token balance at the funding address.
+    WebhookAuthHeader:
       type: object
-      required:
-      - kind
-      - message
-      - mitigation
-      properties:
-        kind:
-          type: string
-          enum:
-          - owner
-        message:
-          type: string
-        mitigation:
-          type: string
-          enum:
-          - change
-          - verify
-    WebhookEventType:
-      type: string
-      description: 'Event type a webhook can subscribe to. `WORKFLOW_COMPLETED` fires when a workflow''s status
+      description: 'Optional custom HTTP header that Halliday attaches to every delivery to your receiver URL, so your
 
-        becomes `COMPLETE`; `WORKFLOW_FAILED` fires when it becomes `FAILED`.
+        endpoint can authenticate inbound deliveries in addition to verifying `X-Halliday-Signature`. The
+
+        `value` is write-only — it is never returned by any endpoint; the list endpoint echoes only the
+
+        header name as `auth_header_name`.
 
         '
-      enum:
-      - WORKFLOW_COMPLETED
-      - WORKFLOW_FAILED
-    UpdateWebhookRequest:
-      type: object
       required:
-      - label
+      - name
+      - value
       properties:
-        label:
+        name:
           type: string
-          description: Identifies the webhook to update. Cannot be changed.
-          example: prod-workflows
-        url:
+          description: Header name Halliday sends on each delivery.
+          example: X-Webhook-Token
+        value:
           type: string
-          format: uri
-          description: Optional. New receiver URL. Must be HTTPS on port 443.
-          example: https://api.yourapp.com/halliday/webhooks/v2
-        auth_header:
-          description: 'Optional. Set or replace the custom delivery auth header, or pass `null` to remove an
-
-            existing one.
-
-            '
-          anyOf:
-          - $ref: '#/components/schemas/WebhookAuthHeader'
-          - type: 'null'
+          description: Header value. Write-only — never returned.
+          example: a-shared-secret-token
     AmountDownstreamIssue:
       type: object
       required:
@@ -572,84 +498,34 @@ components:
           - TOO_HIGH
           - NO_VALID_AMOUNT
           - UNKNOWN
-    FundingIssue:
+    Asset:
+      type: string
+      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    GeolocationIssue:
       type: object
       required:
       - kind
-      - token
-      - balance
+      - message
       properties:
         kind:
           type: string
           enum:
-          - funding
-        token:
-          $ref: '#/components/schemas/Token'
-        balance:
+          - geolocation
+        message:
           type: string
-          description: Current token balance at the funding address.
-    WebhookDelivery:
+    UnknownIssue:
       type: object
-      description: The signed JSON payload Halliday POSTs to your receiver URL.
       required:
-      - id
-      - time
-      - event_type
-      - event
+      - kind
+      - message
       properties:
-        id:
+        kind:
           type: string
-          format: uuid
-          description: Unique delivery id. Use it for idempotency — a retried delivery reuses the same id.
-          example: 9555b9ed-1d0c-47ad-9e41-056fb4fe087e
-        time:
+          enum:
+          - unknown
+        message:
           type: string
-          format: date-time
-          description: ISO-8601 timestamp of the event.
-          example: '2026-06-22T18:04:11.000Z'
-        event_type:
-          $ref: '#/components/schemas/WebhookEventType'
-        event:
-          type: object
-          description: The terminal workflow state.
-          required:
-          - workflow_id
-          - status
-          properties:
-            workflow_id:
-              type: string
-              format: uuid
-              example: e050f684-7b3d-407a-98e7-5dfe11860317
-            status:
-              type: string
-              description: Terminal workflow status.
-              enum:
-              - COMPLETE
-              - FAILED
-              example: COMPLETE
-    WebhookAuthHeader:
-      type: object
-      description: 'Optional custom HTTP header that Halliday attaches to every delivery to your receiver URL, so your
-
-        endpoint can authenticate inbound deliveries in addition to verifying `X-Halliday-Signature`. The
-
-        `value` is write-only — it is never returned by any endpoint; the list endpoint echoes only the
-
-        header name as `auth_header_name`.
-
-        '
-      required:
-      - name
-      - value
-      properties:
-        name:
-          type: string
-          description: Header name Halliday sends on each delivery.
-          example: X-Webhook-Token
-        value:
-          type: string
-          description: Header value. Write-only — never returned.
-          example: a-shared-secret-token
     ValidationErrorResponse:
       type: object
       description: 'Returned when a request body fails schema validation. `errors` contains one entry per
@@ -689,50 +565,31 @@ components:
               message:
                 type: string
                 example: 'Invalid input: expected string, received undefined'
-    RegisterWebhookRequest:
+    RotateSecretResponse:
       type: object
       required:
-      - url
-      - label
-      - event_types
+      - id
+      - signing_secret
       properties:
-        url:
+        id:
           type: string
-          format: uri
-          description: 'Receiver URL. Must be HTTPS on port 443. Private/reserved IP addresses are rejected (SSRF protection).
-
-            '
-          example: https://api.yourapp.com/halliday/webhooks
-        label:
-          type: string
-          description: 'Human-readable identifier, unique per org. Used to address the webhook on update, rotate, and delete.
-
-            '
-          example: prod-workflows
-        event_types:
-          type: array
-          minItems: 1
-          description: At least one event type to subscribe to.
-          items:
-            $ref: '#/components/schemas/WebhookEventType'
-          example:
-          - WORKFLOW_COMPLETED
-          - WORKFLOW_FAILED
-        auth_header:
-          $ref: '#/components/schemas/WebhookAuthHeader'
+          example: 4f2c…
         signing_secret:
           type: string
-          description: 'Optional. Provide your own HMAC-SHA256 signing secret instead of letting Halliday generate
-
-            one. Omit this to receive a generated `signing_secret` in the response.
-
-            '
-          example: my-own-signing-secret
-    Token:
-      type: string
-      description: Token identifier in the format "chain:address"
-      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
-      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+          description: The new signing secret. Store it now — it is not retrievable later.
+          example: d4e5f6…
+    OtherIssue:
+      type: object
+      required:
+      - kind
+      - message
+      properties:
+        kind:
+          type: string
+          enum:
+          - other
+        message:
+          type: string
     AmountIssue:
       type: object
       required:
@@ -767,90 +624,81 @@ components:
           - TOO_HIGH
           - NO_VALID_AMOUNT
           - UNKNOWN
-    Asset:
-      type: string
-      description: Identifier in the token format ("chain:address") or fiat currency code ("USD")
-      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
-    GeolocationIssue:
+    WebhookDelivery:
       type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - geolocation
-        message:
-          type: string
-    RotateSecretRequest:
-      type: object
-      required:
-      - label
-      properties:
-        label:
-          type: string
-          example: prod-workflows
-        retire_after:
-          type: string
-          format: date-time
-          description: 'Optional. When the previous signing secret(s) should stop signing. Floored to at least 24h
-
-            from now. Omit to keep the previous secret active indefinitely (both keep signing).
-
-            '
-          example: '2026-07-01T00:00:00.000Z'
-    OtherIssue:
-      type: object
-      required:
-      - kind
-      - message
-      properties:
-        kind:
-          type: string
-          enum:
-          - other
-        message:
-          type: string
-    DeleteWebhookRequest:
-      type: object
-      required:
-      - label
-      properties:
-        label:
-          type: string
-          example: prod-workflows
-    ListWebhooksResponse:
-      type: object
-      required:
-      - webhooks
-      properties:
-        webhooks:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookSummary'
-    RotateSecretResponse:
-      type: object
+      description: The signed JSON payload Halliday POSTs to your receiver URL.
       required:
       - id
-      - signing_secret
+      - time
+      - event_type
+      - event
       properties:
         id:
           type: string
-          example: 4f2c…
-        signing_secret:
+          format: uuid
+          description: Unique delivery id. Use it for idempotency — a retried delivery reuses the same id.
+          example: 9555b9ed-1d0c-47ad-9e41-056fb4fe087e
+        time:
           type: string
-          description: The new signing secret. Store it now — it is not retrievable later.
-          example: d4e5f6…
-    Limits:
+          format: date-time
+          description: ISO-8601 timestamp of the event.
+          example: '2026-06-22T18:04:11.000Z'
+        event_type:
+          $ref: '#/components/schemas/WebhookEventType'
+        event:
+          type: object
+          description: The terminal workflow state.
+          required:
+          - workflow_id
+          - status
+          properties:
+            workflow_id:
+              type: string
+              format: uuid
+              example: e050f684-7b3d-407a-98e7-5dfe11860317
+            status:
+              type: string
+              description: Terminal workflow status.
+              enum:
+              - COMPLETE
+              - FAILED
+              example: COMPLETE
+    WebhookEventType:
+      type: string
+      description: 'Event type a webhook can subscribe to. `WORKFLOW_COMPLETED` fires when a workflow''s status
+
+        becomes `COMPLETE`; `WORKFLOW_FAILED` fires when it becomes `FAILED`.
+
+        '
+      enum:
+      - WORKFLOW_COMPLETED
+      - WORKFLOW_FAILED
+    Amount:
+      type: string
+      description: A decimal amount string.
+    UpdateWebhookRequest:
       type: object
+      required:
+      - label
       properties:
-        min:
+        label:
           type: string
-          description: Minimum amount as a decimal string.
-        max:
+          description: Identifies the webhook to update. Cannot be changed.
+          example: prod-workflows
+        url:
           type: string
-          description: Maximum amount as a decimal string.
+          format: uri
+          description: Optional. New receiver URL. Must be HTTPS on port 443.
+          example: https://api.yourapp.com/halliday/webhooks/v2
+        auth_header:
+          description: 'Optional. Set or replace the custom delivery auth header, or pass `null` to remove an
+
+            existing one.
+
+            '
+          anyOf:
+          - $ref: '#/components/schemas/WebhookAuthHeader'
+          - type: 'null'
     PayinMethodIssue:
       type: object
       required:
@@ -863,7 +711,7 @@ components:
           - payin_method
         message:
           type: string
-    UnknownIssue:
+    ProviderIssue:
       type: object
       required:
       - kind
@@ -872,7 +720,7 @@ components:
         kind:
           type: string
           enum:
-          - unknown
+          - provider
         message:
           type: string
     WebhookSummary:
@@ -915,9 +763,161 @@ components:
           type: string
           format: date-time
           example: '2026-06-20T12:00:00.000Z'
-    Amount:
+    Token:
       type: string
-      description: A decimal amount string.
+      description: Token identifier in the format "chain:address"
+      pattern: ^[a-z]+:0x[a-fA-F0-9]+$
+      example: ethereum:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    ListWebhooksResponse:
+      type: object
+      required:
+      - webhooks
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookSummary'
+    Issue:
+      oneOf:
+      - $ref: '#/components/schemas/AmountIssue'
+      - $ref: '#/components/schemas/AmountDownstreamIssue'
+      - $ref: '#/components/schemas/FundingIssue'
+      - $ref: '#/components/schemas/OwnerIssue'
+      - $ref: '#/components/schemas/GeolocationIssue'
+      - $ref: '#/components/schemas/ProviderIssue'
+      - $ref: '#/components/schemas/PayinMethodIssue'
+      - $ref: '#/components/schemas/OtherIssue'
+      - $ref: '#/components/schemas/UnknownIssue'
+      discriminator:
+        propertyName: kind
+    RegisterWebhookRequest:
+      type: object
+      required:
+      - url
+      - label
+      - event_types
+      properties:
+        url:
+          type: string
+          format: uri
+          description: 'Receiver URL. Must be HTTPS on port 443. Private/reserved IP addresses are rejected (SSRF protection).
+
+            '
+          example: https://api.yourapp.com/halliday/webhooks
+        label:
+          type: string
+          description: 'Human-readable identifier, unique per org. Used to address the webhook on update, rotate, and delete.
+
+            '
+          example: prod-workflows
+        event_types:
+          type: array
+          minItems: 1
+          description: At least one event type to subscribe to.
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+          example:
+          - WORKFLOW_COMPLETED
+          - WORKFLOW_FAILED
+        auth_header:
+          $ref: '#/components/schemas/WebhookAuthHeader'
+        signing_secret:
+          type: string
+          description: 'Optional. Provide your own HMAC-SHA256 signing secret instead of letting Halliday generate
+
+            one. Omit this to receive a generated `signing_secret` in the response.
+
+            '
+          example: my-own-signing-secret
+    Limits:
+      type: object
+      properties:
+        min:
+          type: string
+          description: Minimum amount as a decimal string.
+        max:
+          type: string
+          description: Maximum amount as a decimal string.
+    DeleteWebhookRequest:
+      type: object
+      required:
+      - label
+      properties:
+        label:
+          type: string
+          example: prod-workflows
+    Webhook:
+      type: object
+      description: 'A registered webhook including its signing secret. Returned only on creation and rotation.
+
+        '
+      required:
+      - id
+      - label
+      - url
+      - signing_secret
+      properties:
+        id:
+          type: string
+          example: 4f2c…
+        label:
+          type: string
+          example: prod-workflows
+        url:
+          type: string
+          format: uri
+          example: https://api.yourapp.com/halliday/webhooks
+        signing_secret:
+          type: string
+          description: 'HMAC-SHA256 signing secret. Store it now — it is never returned again from the list endpoint.
+
+            '
+          example: a1b2c3…
+    OwnerIssue:
+      type: object
+      required:
+      - kind
+      - message
+      - mitigation
+      properties:
+        kind:
+          type: string
+          enum:
+          - owner
+        message:
+          type: string
+        mitigation:
+          type: string
+          enum:
+          - change
+          - verify
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+      description: Error response for known errors
+    RotateSecretRequest:
+      type: object
+      required:
+      - label
+      properties:
+        label:
+          type: string
+          example: prod-workflows
+        retire_after:
+          type: string
+          format: date-time
+          description: 'Optional. When the previous signing secret(s) should stop signing. Floored to at least 24h
+
+            from now. Omit to keep the previous secret active indefinitely (both keep signing).
+
+            '
+          example: '2026-07-01T00:00:00.000Z'
   securitySchemes:
     ApiKeyAuth:
       type: http
