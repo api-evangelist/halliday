@@ -64,6 +64,132 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Halliday is a company surfaced as a portfolio company of a16z and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+Halliday is a web3 payments and agentic-workflow company (a16z crypto Series A) building the end-to-end onchain deposit platform. Its Agentic Workflow Protocol (AWP) lets developers compose high-level, AI-executable workflows behind immutable guardrails without writing smart-contract code. The flagship product, Halliday Payments, is a unified cross-chain payments API and drop-in widget that lets users onramp from fiat, bridge, and swap to acquire any asset on any chain in a fully self-custodial way, routing intelligently across onramps (MoonPay, Transak, Stripe), swaps, and bridges. The Halliday API V2 (https://v2.prod.halliday.xyz) exposes chains, assets, quotes, payments, balances, withdrawals, and signed workflow webhooks, authenticated with publishable API keys, alongside JS/React/React Native SDKs and a published Claude Code integration skill.
 
-Backed by: a16z
+**Areas:** Company · Payments · Cryptocurrency · Blockchain · Web3 · On-Ramp · Swap · DeFi · Agentic Workflows · Fintech
+
+## Halliday on APIs.io
+
+Everything profiled for Halliday is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/halliday/](https://apis.io/providers/halliday/)** — or go straight to one of the APIs or properties below.
+
+### APIs (4)
+
+- [Halliday Assets API](https://apis.io/apis/halliday/halliday-assets-api/) — Asset information, discovery, and supported asset pairs
+- [Halliday Chains API](https://apis.io/apis/halliday/halliday-chains-api/) — Blockchain network information and configuration
+- [Halliday Payments API](https://apis.io/apis/halliday/halliday-payments-api/) — Core payment operations including quotes, confirmation, and status tracking
+- [Halliday Webhooks API](https://apis.io/apis/halliday/halliday-webhooks-api/) — Register HTTPS endpoints to receive signed notifications when a workflow reaches a terminal state, instead of polling for status. You subscribe to one or…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Halliday Webhooks](https://apis.io/asyncapis/halliday/halliday-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [halliday](https://apis.io/servers/halliday/halliday/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Halliday Agentic Access](https://apis.io/agentic-access/halliday/halliday-agentic-access/)
+
+#### Collections (4)
+
+Postman and Open Collection request collections.
+
+- [Halliday API V2 Assets API](https://apis.io/collections/halliday/open-halliday-assets-api/)
+- [Halliday API V2 Assets Chains API](https://apis.io/collections/halliday/open-halliday-chains-api/)
+- [Halliday API V2 Assets Payments API](https://apis.io/collections/halliday/open-halliday-payments-api/)
+- [Halliday API V2 Assets Webhooks API](https://apis.io/collections/halliday/open-halliday-webhooks-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Halliday Openapi Overlay](https://apis.io/overlays/halliday/halliday-openapi-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Halliday Authentication](https://apis.io/security/halliday/halliday-authentication/)
+- [Halliday Domain Security](https://apis.io/security/halliday/halliday-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.halliday.xyz/)
+- [Documentation](https://docs.halliday.xyz)
+- [Getting started](https://docs.halliday.xyz/pages/api-quickstart.md)
+- [API reference](https://docs.halliday.xyz/pages/halliday-api-docs.md)
+- [Sign up](https://dashboard.halliday.xyz/)
+- [Support](https://halliday.xyz/contact)
+- [Blog](https://blog.halliday.xyz)
+- [Compliance](https://docs.halliday.xyz/pages/compliance-security.md)
+- [Terms of service](https://halliday.xyz/legal/terms-of-use)
+- [Privacy policy](https://halliday.xyz/legal/privacy-policy)
+- [GitHub](https://github.com/HallidayInc)
+
+## API Evangelist rating
+
+**Kin Score 48.0** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 64.8 |
+| Contract governance | 18.2 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 73.8 |
+| Access clarity | 28.9 |
+
+**Agent readiness 37.3** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | yes |
+| Agent Skills | yes |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 26.8** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/halliday/](https://apis.io/providers/halliday/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Halliday: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/halliday/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
